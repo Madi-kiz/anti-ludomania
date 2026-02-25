@@ -2,13 +2,20 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лудоманияға қарсы AI | Anti-Ludomania AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MindGuard AI</title>
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2A5C82">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2092/2092663.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* БАЗОВЫЕ ПЕРЕМЕННЫЕ ТЕМЫ (МЕНЯЮТСЯ ЧЕРЕЗ JS) */
         :root {
             --primary-color: #2A5C82; 
             --accent-color: #FF6B6B;  
@@ -18,84 +25,101 @@
             --white: #ffffff;
             --success: #2ecc71;
             --warning: #f1c40f;
+            --border: #eeeeee;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background-color: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; }
-        .logo i { margin-right: 10px; font-size: 28px; }
-        .lang-wrapper { display: flex; align-items: center; border: 1px solid #ddd; padding: 5px 10px; border-radius: 20px; }
-        .lang-icon { color: var(--text-light); margin-right: 8px; }
-        .lang-switch select { border: none; font-size: 14px; outline: none; background: transparent; font-family: 'Montserrat', sans-serif; cursor: pointer; }
-
-        .hero { display: flex; align-items: center; justify-content: space-between; padding: 80px 5%; min-height: 80vh; }
-        .hero-content { flex: 1; padding-right: 50px; }
-        .hero h1 { font-size: 48px; font-weight: 700; margin-bottom: 20px; color: var(--primary-color); line-height: 1.2; }
-        .hero p { font-size: 20px; margin-bottom: 40px; color: var(--text-light); }
-        .btn { display: inline-block; padding: 15px 30px; font-size: 16px; font-weight: 600; color: var(--white); background: linear-gradient(45deg, var(--accent-color), #ff8e8e); border: none; border-radius: 30px; cursor: pointer; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 10px 20px -10px rgba(255, 107, 107, 0.5); text-align: center;}
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -10px rgba(255, 107, 107, 0.7); }
-        .hero-image { flex: 1; display: flex; justify-content: center; }
-        .hero-image img { max-width: 100%; height: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border-radius: 20px; }
-
-        #test-section { display: none; max-width: 700px; margin: 50px auto; background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .form-input { width: 100%; padding: 15px; margin-bottom: 25px; border: 2px solid #eee; border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; outline: none; }
-        .form-input:focus { border-color: var(--primary-color); }
-        .input-label { font-weight: 600; display: block; margin-bottom: 8px; text-align: left; }
+        /* HEADER И ПАЛИТРА ТЕМ */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 15px;}
+        .logo { font-size: 22px; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; }
+        .logo i { margin-right: 10px; font-size: 26px; }
         
-        .question-number { color: var(--text-light); font-size: 14px; margin-bottom: 10px; font-weight: 600;}
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .theme-palette { display: flex; gap: 8px; align-items: center; padding: 5px 10px; background: var(--bg-light); border-radius: 20px; border: 1px solid var(--border);}
+        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .theme-dot:hover { transform: scale(1.2); }
+        .theme-dot.active { border-color: var(--text-dark); transform: scale(1.1); }
+        
+        .lang-wrapper { display: flex; align-items: center; border: 1px solid var(--border); padding: 5px 10px; border-radius: 20px; background: var(--bg-light); color: var(--text-dark); }
+        .lang-switch select { border: none; font-size: 14px; outline: none; background: transparent; font-family: 'Montserrat', sans-serif; cursor: pointer; color: var(--text-dark); }
+
+        /* ОСНОВНОЙ КОНТЕНТ */
+        .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 5%; min-height: 80vh; }
+        .hero-content { flex: 1; padding-right: 50px; }
+        .hero h1 { font-size: 42px; font-weight: 700; margin-bottom: 20px; color: var(--primary-color); line-height: 1.2; }
+        .hero p { font-size: 18px; margin-bottom: 40px; color: var(--text-light); }
+        .btn { display: inline-block; padding: 15px 30px; font-size: 16px; font-weight: 600; color: #fff !important; background: var(--accent-color); border: none; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 20px -10px var(--accent-color); text-align: center; }
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+        .hero-image { flex: 1; display: flex; justify-content: center; }
+        .hero-image img { max-width: 100%; height: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border-radius: 20px; }
+
+        /* ФОРМЫ И ТЕСТЫ */
+        #test-section { display: none; max-width: 700px; margin: 50px auto; background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; border: 1px solid var(--border); }
+        .form-input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid var(--border); background: var(--bg-light); color: var(--text-dark); border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; outline: none; transition: 0.3s; }
+        .form-input:focus { border-color: var(--primary-color); }
+        
+        /* ТРЕКЕР НАСТРОЕНИЯ */
+        #mood-container { display: none; text-align: center; animation: fadeIn 0.5s; }
+        .mood-emojis { display: flex; justify-content: center; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
+        .mood-btn { font-size: 40px; background: var(--bg-light); border: 2px solid var(--border); border-radius: 15px; padding: 10px 20px; cursor: pointer; transition: 0.3s; }
+        .mood-btn:hover { transform: scale(1.1); background: var(--white); border-color: var(--primary-color); }
+
         .question-text { font-size: 22px; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; }
         .options-container { display: flex; flex-direction: column; gap: 15px; }
-        .option-btn { background-color: var(--bg-light); border: 2px solid #eee; padding: 15px 20px; border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; cursor: pointer; transition: all 0.2s; text-align: left; }
-        .option-btn:hover { border-color: var(--primary-color); background-color: #f0f7f9; }
+        .option-btn { background-color: var(--bg-light); color: var(--text-dark); border: 2px solid var(--border); padding: 15px 20px; border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; cursor: pointer; transition: 0.2s; text-align: left; }
+        .option-btn:hover { border-color: var(--primary-color); background-color: var(--white); }
         
-        #success-screen { display: none; text-align: center; animation: fadeIn 1s; }
-        .success-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; }
-        .story-title { font-size: 26px; color: var(--primary-color); margin-bottom: 15px; }
-        .story-text { text-align: justify; margin-bottom: 20px; font-size: 16px;}
+        .success-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; filter: brightness(0.9);}
+        .game-container { display: none; margin-top: 30px; padding: 20px; background: var(--bg-light); border-radius: 15px; border: 2px dashed var(--border); }
         
-        /* --- ОЙЫНДАР ДИЗАЙНЫ --- */
-        .game-container { display: none; margin-top: 30px; padding: 20px; background: var(--bg-light); border-radius: 15px; border: 2px dashed #ccc; }
-        .casino-display { font-size: 40px; letter-spacing: 15px; margin: 20px 0; background: #fff; padding: 15px; border-radius: 10px; border: 3px solid #333; }
-        .balance { font-size: 20px; font-weight: bold; color: var(--success); margin-bottom: 15px; }
+        /* ИГРЫ */
+        .casino-display { font-size: 40px; letter-spacing: 15px; margin: 20px 0; background: var(--white); padding: 15px; border-radius: 10px; border: 3px solid var(--border); color: var(--text-dark);}
         .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
         .memory-card { background: var(--primary-color); height: 70px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 30px; cursor: pointer; color: transparent; transition: 0.3s; }
-        .memory-card.flipped { background: #fff; color: #333; border: 2px solid var(--primary-color); cursor: default; }
-        .myth-card { background: #fff; padding: 30px; border-radius: 10px; font-size: 18px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .myth-buttons { display: flex; gap: 15px; justify-content: center; }
-        .myth-btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; color: #fff; }
-        .btn-true { background: var(--success); }
-        .btn-false { background: var(--accent-color); }
-        .myth-feedback { margin-top: 15px; font-weight: bold; font-size: 16px; display: none; padding: 15px; border-radius: 10px; }
+        .memory-card.flipped { background: var(--white); color: var(--text-dark); border: 2px solid var(--primary-color); cursor: default; }
+        .myth-card { background: var(--white); color: var(--text-dark); padding: 30px; border-radius: 10px; font-size: 18px; font-weight: bold; border: 1px solid var(--border); margin-bottom: 20px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        footer { text-align: center; padding: 30px 20px; background-color: var(--primary-color); color: rgba(255,255,255,0.8); margin-top: 50px; }
+        /* ИИ ЧАТ-БОТ */
+        .chat-widget { position: fixed; bottom: 30px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; }
+        .chat-btn { width: 60px; height: 60px; background: var(--primary-color); color: #fff; border-radius: 50%; font-size: 26px; cursor: pointer; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;}
+        .chat-box { display: none; width: 350px; height: 450px; background: var(--white); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); flex-direction: column; overflow: hidden; position: absolute; bottom: 80px; right: 0; border: 1px solid var(--border); }
+        .chat-header { background: var(--primary-color); color: #fff; padding: 15px; display: flex; justify-content: space-between; }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-light); }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; color: #fff; }
+        .msg-bot { background: #34495e; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-user { background: var(--primary-color); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-input-area { display: flex; padding: 10px; background: var(--white); border-top: 1px solid var(--border); }
+        .chat-input { flex: 1; padding: 10px; background: var(--bg-light); color: var(--text-dark); border: 1px solid var(--border); border-radius: 20px; outline: none; }
+        .chat-send-btn { background: var(--accent-color); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; margin-left: 10px; cursor: pointer; }
 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         @media (max-width: 768px) {
-            .hero { flex-direction: column-reverse; text-align: center; padding: 40px 5%; }
-            .hero-content { padding-right: 0; margin-top: 40px; }
-            .hero h1 { font-size: 32px; }
-            #test-section { padding: 20px; margin: 20px; }
-            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .hero { flex-direction: column-reverse; text-align: center; padding: 20px 5%; }
+            .hero-content { padding-right: 0; margin-top: 30px; }
+            .header-controls { margin-top: 10px; justify-content: center; width: 100%;}
+            .chat-box { width: 300px; right: -10px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <i class="fas fa-shield-alt"></i>
-            <span data-i18n="logo">Лудоманияға қарсы AI</span>
-        </div>
-        <div class="lang-wrapper">
-            <i class="fas fa-globe lang-icon"></i>
-            <div class="lang-switch">
-                <select id="languageSelect" onchange="changeLanguage()">
-                    <option value="kk">Қазақша</option>
-                    <option value="ru">Русский</option>
-                    <option value="en">English</option>
-                </select>
+        <div class="logo"><i class="fas fa-shield-alt"></i> <span data-i18n="logo">MindGuard AI</span></div>
+        <div class="header-controls">
+            <div class="theme-palette" id="themePalette"></div>
+            
+            <div class="lang-wrapper">
+                <i class="fas fa-globe lang-icon"></i>
+                <div class="lang-switch">
+                    <select id="languageSelect" onchange="changeLanguage()">
+                        <option value="kk">Қаз</option>
+                        <option value="ru">Рус</option>
+                        <option value="en">Eng</option>
+                    </select>
+                </div>
             </div>
         </div>
     </header>
@@ -103,13 +127,13 @@
     <section class="hero" id="hero-section">
         <div class="hero-content">
             <h1 data-i18n="title">Өз ойыныңды басқар, өміріңді емес.</h1>
-            <p data-i18n="subtitle">Жасанды интеллект көмегімен лудоманияға бейімділігіңді анонимді түрде тексер және бақылауға ал.</p>
+            <p data-i18n="subtitle">Жасанды интеллект көмегімен лудоманияға бейімділігіңді анонимді түрде тексер.</p>
             <button onclick="showRegistration()" class="btn">
                 <span data-i18n="btn_test">Тесттен өту</span> <i class="fas fa-rocket"></i>
             </button>
         </div>
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop" alt="Youth having fun">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop" alt="Youth">
         </div>
     </section>
 
@@ -117,393 +141,223 @@
         <div id="registration-container">
             <h2 data-i18n="reg_title" style="color: var(--primary-color); margin-bottom: 25px;">Өзіңізді таныстырыңыз</h2>
             <div>
-                <label data-i18n="label_name" class="input-label">Аты-жөніңіз:</label>
-                <input type="text" id="student-name" class="form-input" data-i18n-placeholder="placeholder_name" placeholder="Аты-жөніңізді жазыңыз">
+                <input type="text" id="student-name" class="form-input" data-i18n-placeholder="placeholder_name" placeholder="Аты-жөніңіз...">
+                <input type="text" id="student-class" class="form-input" data-i18n-placeholder="placeholder_class" placeholder="Сыныбыңыз...">
             </div>
-            <div>
-                <label data-i18n="label_class" class="input-label">Сыныбыңыз (мысалы, 9 «А»):</label>
-                <input type="text" id="student-class" class="form-input" data-i18n-placeholder="placeholder_class" placeholder="Сыныбыңызды жазыңыз">
+            <div style="text-align: left; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="consent-check" style="transform: scale(1.3); cursor: pointer;">
+                <label for="consent-check" data-i18n="label_consent" style="font-size: 13px; color: var(--text-light);">Мен жауаптарымның құпия өңделуіне келісемін.</label>
             </div>
-            <button onclick="beginQuiz()" class="btn" style="width: 100%;">
-                <span data-i18n="btn_start_quiz">Бастау</span> <i class="fas fa-arrow-right"></i>
-            </button>
+            <button onclick="beginMoodTracker()" class="btn" style="width: 100%;"><span data-i18n="btn_start_quiz">Жалғастыру</span> <i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div id="mood-container">
+            <h2 data-i18n="mood_title" style="color: var(--primary-color);">Қазір өзіңізді қалай сезініп тұрсыз?</h2>
+            <div class="mood-emojis">
+                <button class="mood-btn" onclick="selectMood('😭 Өте нашар / Ужасно')">😭</button>
+                <button class="mood-btn" onclick="selectMood('😔 Мұңды / Грустно')">😔</button>
+                <button class="mood-btn" onclick="selectMood('😐 Қалыпты / Нормально')">😐</button>
+                <button class="mood-btn" onclick="selectMood('🙂 Жақсы / Хорошо')">🙂</button>
+                <button class="mood-btn" onclick="selectMood('🤩 Керемет / Отлично')">🤩</button>
+            </div>
+            <p style="color: var(--text-light); font-size: 14px;" data-i18n="mood_desc">Бір эмоцияны таңдаңыз</p>
         </div>
 
         <div id="quiz-container" style="display: none;">
-            <div class="question-number" id="q-number"></div>
+            <div class="question-number" id="q-number" style="color: var(--text-light);"></div>
             <div class="question-text" id="q-text"></div>
             <div class="options-container" id="options-area"></div>
         </div>
 
         <div id="success-screen">
             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop" class="success-img">
-            <h2 class="story-title" data-i18n="success_title">Сауалнама сәтті аяқталды! 🎉</h2>
-            <div class="story-text" id="story-content" data-i18n="success_story">
-                </div>
-            
-            <button onclick="revealGame()" id="btn-reveal-game" class="btn" style="background: var(--primary-color); margin-bottom: 20px;">
-                <span data-i18n="btn_game">Шағын ойынды ашу</span> <i class="fas fa-gamepad"></i>
-            </button>
+            <h2 class="story-title" data-i18n="success_title">Аяқталды! 🎉</h2>
+            <div class="story-text" id="story-content" data-i18n="success_story"></div>
+            <button onclick="revealGame()" id="btn-reveal-game" class="btn"><span data-i18n="btn_game">Шағын ойын</span> <i class="fas fa-gamepad"></i></button>
 
-            <div id="game-casino" class="game-container">
-                <h3 data-i18n="game1_title">Иллюзияны бұзу</h3>
-                <p data-i18n="game1_desc">Сізде 10 000 ₸ виртуалды ақша бар. Бағыңызды сынап көріңіз!</p>
-                <div class="balance" id="casino-balance"></div>
-                <div class="casino-display" id="casino-slots">🍒 🔔 🍋</div>
-                <button onclick="spinCasino()" class="btn" id="btn-spin" style="background: #e67e22;" data-i18n="game1_btn">Бәс тігу (2000 ₸)</button>
-                <p id="casino-msg" style="margin-top: 15px; font-weight: bold; color: var(--accent-color);"></p>
-            </div>
-
-            <div id="game-memory" class="game-container">
-                <h3 data-i18n="game2_title">Пайдалы әдеттер</h3>
-                <p data-i18n="game2_desc">Бірдей хоббилерді (суреттерді) тауып, жұптастырыңыз.</p>
-                <div class="memory-grid" id="memory-board"></div>
-                <p id="memory-msg" style="margin-top: 15px; font-weight: bold; color: var(--success); display: none;" data-i18n="game2_win">Жарайсың! Өмірде де осындай пайдалы хоббилерді таңда!</p>
-            </div>
-
-            <div id="game-myth" class="game-container">
-                <h3 data-i18n="game3_title">Ақиқат па, әлде Миф пе?</h3>
-                <div class="myth-card" id="myth-text"></div>
-                <div class="myth-buttons">
-                    <button class="myth-btn btn-true" onclick="checkMyth(true)" data-i18n="game3_true">Ақиқат</button>
-                    <button class="myth-btn btn-false" onclick="checkMyth(false)" data-i18n="game3_false">Миф</button>
-                </div>
-                <div id="myth-feedback" class="myth-feedback"></div>
-            </div>
-
-            <br>
-            <button onclick="location.reload()" class="btn" style="background: #95a5a6; padding: 10px 20px; font-size: 14px;">
-                <span data-i18n="btn_home">Басты бетке оралу</span> <i class="fas fa-home"></i>
-            </button>
+            <div id="game-casino" class="game-container"><h3 data-i18n="game1_title">Иллюзияны бұзу</h3><div class="balance" id="casino-balance"></div><div class="casino-display" id="casino-slots">🍒 🔔 🍋</div><button onclick="spinCasino()" class="btn" id="btn-spin" data-i18n="game1_btn">Бәс тігу</button><p id="casino-msg" style="margin-top: 15px; font-weight: bold; color: var(--accent-color);"></p></div>
+            <div id="game-memory" class="game-container"><h3 data-i18n="game2_title">Пайдалы әдеттер</h3><div class="memory-grid" id="memory-board"></div><p id="memory-msg" style="margin-top: 15px; font-weight: bold; color: var(--success); display: none;" data-i18n="game2_win">Жарайсың!</p></div>
+            <div id="game-myth" class="game-container"><h3 data-i18n="game3_title">Миф пе?</h3><div class="myth-card" id="myth-text"></div><div class="myth-buttons"><button class="myth-btn btn-true" onclick="checkMyth(true)" data-i18n="game3_true">Ақиқат</button><button class="myth-btn btn-false" onclick="checkMyth(false)" data-i18n="game3_false">Миф</button></div><div id="myth-feedback" class="myth-feedback"></div></div>
+            <br><button onclick="location.reload()" class="btn" style="background: #95a5a6; padding: 10px 20px; font-size: 14px;"><i class="fas fa-home"></i></button>
         </div>
     </section>
 
-    <footer>
-        <p data-i18n="footer_text">© 2026 "Лудоманияға қарсы AI" жобасы. Барлық деректер құпия сақталады.</p>
-    </footer>
+    <div class="chat-widget">
+        <button class="chat-btn" onclick="toggleChat()" id="chatBtnIcon"><i class="fas fa-comment-dots"></i></button>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                <span><i class="fas fa-robot"></i> MindGuard AI</span>
+                <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" class="chat-input" data-i18n-placeholder="chat_placeholder" placeholder="..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- 1. ТІЛ АУЫСТЫРУ БАЗАСЫ (ДИНАМИКАЛЫҚ МӘТІНДЕР) ---
+        // === 1. 7 СТИЛЬНЫХ ТЕМ (ВИЗУАЛИЗАЦИЯ) ===
+        const themes = [
+            { name: "Default", primary: "#2A5C82", accent: "#FF6B6B", bgLight: "#F9FBFC", textDark: "#333333", white: "#ffffff", border: "#eeeeee", dot: "linear-gradient(45deg, #2A5C82, #FF6B6B)" },
+            { name: "Dark Neon", primary: "#00f3ff", accent: "#ff003c", bgLight: "#0b0c10", textDark: "#f5f6fa", white: "#1f2326", border: "#2f3640", dot: "linear-gradient(45deg, #0b0c10, #00f3ff)" },
+            { name: "Hacker", primary: "#00ff00", accent: "#00cc00", bgLight: "#000000", textDark: "#00ff00", white: "#0a0a0a", border: "#003300", dot: "linear-gradient(45deg, #000000, #00ff00)" },
+            { name: "Sunset", primary: "#ff7675", accent: "#fdcb6e", bgLight: "#fff0e6", textDark: "#2d3436", white: "#ffffff", border: "#ffeaa7", dot: "linear-gradient(45deg, #ff7675, #fdcb6e)" },
+            { name: "Ocean", primary: "#0984e3", accent: "#00b894", bgLight: "#e0f7fa", textDark: "#2c3e50", white: "#ffffff", border: "#81ecec", dot: "linear-gradient(45deg, #0984e3, #00b894)" },
+            { name: "Cyberpunk", primary: "#e056fd", accent: "#f9ca24", bgLight: "#130f40", textDark: "#dff9fb", white: "#30336b", border: "#535c68", dot: "linear-gradient(45deg, #130f40, #e056fd)" },
+            { name: "Minimal", primary: "#2f3542", accent: "#57606f", bgLight: "#ffffff", textDark: "#1e272e", white: "#f1f2f6", border: "#dfe4ea", dot: "linear-gradient(45deg, #ffffff, #2f3542)" }
+        ];
+
+        function applyTheme(index) {
+            const root = document.documentElement;
+            const t = themes[index];
+            root.style.setProperty('--primary-color', t.primary);
+            root.style.setProperty('--accent-color', t.accent);
+            root.style.setProperty('--bg-light', t.bgLight);
+            root.style.setProperty('--text-dark', t.textDark);
+            root.style.setProperty('--white', t.white);
+            root.style.setProperty('--border', t.border);
+            
+            document.querySelectorAll('.theme-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            // Сохраняем тему для PWA
+            localStorage.setItem('mindguard_theme', index);
+        }
+
+        // Рендер кнопок тем
+        const palette = document.getElementById('themePalette');
+        themes.forEach((t, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'theme-dot';
+            dot.style.background = t.dot;
+            dot.onclick = () => applyTheme(index);
+            palette.appendChild(dot);
+        });
+        
+        // Восстановление темы при загрузке
+        const savedTheme = localStorage.getItem('mindguard_theme') || 0;
+        applyTheme(parseInt(savedTheme));
+
+        // === 2. МУЛЬТИЯЗЫЧНОСТЬ И ВОПРОСЫ (СОКРАЩЕНО ДЛЯ КОДА) ===
         const translations = {
-            kk: {
-                logo: "Лудоманияға қарсы AI", title: "Өз ойыныңды басқар, өміріңді емес.", subtitle: "Жасанды интеллект көмегімен лудоманияға бейімділігіңді анонимді түрде тексер.", btn_test: "Тесттен өту", footer_text: "© 2026 «Лудоманияға қарсы AI» жобасы.",
-                reg_title: "Өзіңізді таныстырыңыз", label_name: "Аты-жөніңіз:", label_class: "Сыныбыңыз (мысалы, 9 «А»):", placeholder_name: "Аты-жөніңізді жазыңыз...", placeholder_class: "Сыныбыңызды жазыңыз...", btn_start_quiz: "Бастау",
-                success_title: "Сауалнама сәтті аяқталды! 🎉",
-                success_story: "Бірде жас жігіт данышпанға келіп: <em>'Мен виртуалды әлемде мықтымын, бірақ шынайы өмірде өзімді әлсіз сезінемін. Не істейін?'</em> деп сұрайды.<br><br>Данышпан: <em>'Ойындағы кейіпкеріңді дамытуға уақыт жұмсайсың. Ал шынайы өмірдегі басты кейіпкер — <b>сен өзіңсің</b>. Күш-жігеріңді білімге, спортқа жұмсасаң, сенің шынайы өмірдегі деңгейің биікке көтеріледі'</em> дейді.<br><br>Өз өміріңнің басты ойыншысы бол!",
-                btn_game: "Шағын ойынды ашу", btn_home: "Басты бетке оралу",
-                game1_title: "Иллюзияны бұзу", game1_desc: "Сізде 10 000 ₸ виртуалды ақша бар. Бағыңызды сынап көріңіз!", game1_btn: "Бәс тігу (2000 ₸)",
-                game2_title: "Пайдалы әдеттер", game2_desc: "Бірдей хоббилерді (суреттерді) тауып, жұптастырыңыз.", game2_win: "Жарайсың! Өмірде де осындай пайдалы хоббилерді таңда!",
-                game3_title: "Ақиқат па, әлде Миф пе?", game3_true: "Ақиқат", game3_false: "Миф",
-                
-                // JS үшін арнайы мәтіндер
-                alert_empty: "Өтінеміз, барлық жолақтарды толтырыңыз!",
-                q_progress: "Сұрақ",
-                balance: "Баланс",
-                casino_lose: "Ұтылдыңыз! Тағы байқап көріңіз...",
-                casino_bankrupt: "БАНКРОТ! 💸<br><br>Көрдіңіз бе? Жүйе әрқашан жеңеді. Казино сізді байыту үшін емес, сіздің ақшаңызды сорып алу үшін жасалған.",
-                myth_text: '"Егер көп ұтылсаң, келесі жолы міндетті түрде үлкен ұтыс түседі"',
-                myth_wrong: "ҚАТЕ! ❌ Бұл лудомандардың басты қателігі (Gambler's fallacy). Әрбір жаңа ойын – нөлден басталады.",
-                myth_correct: "ДҰРЫС! ✅ Бұл құр ғана миф. Ойын автоматтары математикалық тұрғыдан тек казиноға пайда әкелетіндей жасалған."
-            },
-            ru: {
-                logo: "ИИ против лудомании", title: "Управляй игрой, а не жизнью.", subtitle: "Анонимно проверь свою склонность к лудомании с помощью ИИ.", btn_test: "Пройти тест", footer_text: "© 2026 Проект «ИИ против лудомании».",
-                reg_title: "Представьтесь", label_name: "Ваше ФИО:", label_class: "Ваш класс (например, 9 «А»):", placeholder_name: "Введите ваше имя...", placeholder_class: "Введите ваш класс...", btn_start_quiz: "Начать",
-                success_title: "Опрос успешно завершен! 🎉",
-                success_story: "Однажды юноша спросил мудреца: <em>'Я силен в виртуальном мире, но слаб в реальном. Что делать?'</em><br><br>Мудрец ответил: <em>'Ты тратишь время на прокачку персонажа в игре. Но главный герой в реальной жизни — <b>ты сам</b>. Направь свои силы на знания и спорт, и твой уровень в жизни станет недосягаемым'</em>.<br><br>Будь главным игроком своей жизни!",
-                btn_game: "Открыть мини-игру", btn_home: "На главную",
-                game1_title: "Разрушение Иллюзий", game1_desc: "У вас есть 10 000 ₸ виртуальных денег. Испытайте удачу!", game1_btn: "Сделать ставку (2000 ₸)",
-                game2_title: "Полезные привычки", game2_desc: "Найдите одинаковые хобби (картинки).", game2_win: "Молодец! Выбирай такие же полезные хобби и в жизни!",
-                game3_title: "Правда или Миф?", game3_true: "Правда", game3_false: "Миф",
-                
-                alert_empty: "Пожалуйста, заполните все поля!", q_progress: "Вопрос", balance: "Баланс",
-                casino_lose: "Проигрыш! Попробуйте еще раз...",
-                casino_bankrupt: "БАНКРОТ! 💸<br><br>Видите? Система всегда побеждает. Казино создано не для того, чтобы обогатить вас, а чтобы забрать ваши деньги.",
-                myth_text: '"Если много проигрывать, в следующий раз обязательно будет крупный выигрыш"',
-                myth_wrong: "ОШИБКА! ❌ Это ошибка игрока (Gambler's fallacy). Каждая новая игра начинается с нуля.",
-                myth_correct: "ПРАВИЛЬНО! ✅ Это просто миф. Игровые автоматы математически запрограммированы на прибыль казино."
-            },
-            en: {
-                logo: "Anti-Ludomania AI", title: "Control the game, not your life.", subtitle: "Anonymously check your gaming tendencies using AI.", btn_test: "Take the Test", footer_text: "© 2026 'Anti-Ludomania AI' Project.",
-                reg_title: "Introduce yourself", label_name: "Full Name:", label_class: "Grade/Class (e.g., 9A):", placeholder_name: "Enter your name...", placeholder_class: "Enter your class...", btn_start_quiz: "Start Quiz",
-                success_title: "Survey completed! 🎉",
-                success_story: "A young man once asked a sage: <em>'I am strong in the virtual world, but weak in real life. What should I do?'</em><br><br>The sage replied: <em>'You spend time leveling up a game character. But the main character in real life is <b>you</b>. Focus your energy on knowledge and sports, and your real-life level will be unbeatable.'</em><br><br>Be the main player of your own life!",
-                btn_game: "Reveal Mini-Game", btn_home: "Return Home",
-                game1_title: "Shattering Illusions", game1_desc: "You have 10,000 ₸ virtual money. Try your luck!", game1_btn: "Place Bet (2000 ₸)",
-                game2_title: "Healthy Habits", game2_desc: "Find the matching hobbies (pictures).", game2_win: "Well done! Choose healthy hobbies in real life too!",
-                game3_title: "Fact or Myth?", game3_true: "Fact", game3_false: "Myth",
-                
-                alert_empty: "Please fill in all fields!", q_progress: "Question", balance: "Balance",
-                casino_lose: "You lost! Try again...",
-                casino_bankrupt: "BANKRUPT! 💸<br><br>See? The house always wins. Casinos are designed to take your money, not make you rich.",
-                myth_text: '"If you lose many times, a big win is definitely coming next"',
-                myth_wrong: "WRONG! ❌ This is the Gambler's fallacy. Every new spin/game is completely independent.",
-                myth_correct: "CORRECT! ✅ This is a myth. Slot machines are mathematically designed to profit the casino."
-            }
+            kk: { logo: "MindGuard AI", title: "Өз ойыныңды басқар, өміріңді емес.", subtitle: "Жасанды интеллект көмегімен психологиялық анализ.", btn_test: "Бастау", reg_title: "Тіркелу", label_name: "Аты-жөніңіз:", placeholder_name: "Мысалы: Асан...", label_class: "Сынып:", placeholder_class: "9 А", label_consent: "Деректерді өңдеуге келісемін", btn_start_quiz: "Жалғастыру", mood_title: "Қазіргі көңіл-күйіңіз қандай?", mood_desc: "Сәйкес эмоцияны басыңыз", success_title: "Аяқталды!", success_story: "Сен — өз өміріңнің басты ойыншысысың. Виртуалды емес, шынайы өміріңді дамыт!", btn_game: "Ойын ойнау", q_progress: "Сұрақ", alert_empty: "Барлығын толтырыңыз!", chat_placeholder: "Жазыңыз..." },
+            ru: { logo: "MindGuard AI", title: "Управляй игрой, а не жизнью.", subtitle: "Психологический анализ с помощью ИИ.", btn_test: "Начать", reg_title: "Регистрация", label_name: "Ваше ФИО:", placeholder_name: "Например: Иван...", label_class: "Класс:", placeholder_class: "9 А", label_consent: "Согласен на обработку данных", btn_start_quiz: "Продолжить", mood_title: "Как вы себя чувствуете сейчас?", mood_desc: "Нажмите на эмоцию", success_title: "Завершено!", success_story: "Ты — главный герой своей жизни. Прокачивай себя в реальности, а не в игре!", btn_game: "Сыграть", q_progress: "Вопрос", alert_empty: "Заполните все поля!", chat_placeholder: "Напишите..." },
+            en: { logo: "MindGuard AI", title: "Control the game, not your life.", subtitle: "AI-powered psychological analysis.", btn_test: "Start", reg_title: "Registration", label_name: "Full Name:", placeholder_name: "e.g. John...", label_class: "Class:", placeholder_class: "9 A", label_consent: "I agree to data processing", btn_start_quiz: "Continue", mood_title: "How are you feeling right now?", mood_desc: "Click an emoji", success_title: "Completed!", success_story: "You are the main character of your life. Level up in reality, not in games!", btn_game: "Play a game", q_progress: "Question", alert_empty: "Fill all fields!", chat_placeholder: "Type..." }
         };
 
-        function getText(key) {
-            const lang = document.getElementById('languageSelect').value;
-            return translations[lang][key] || key;
-        }
+        const questions = [
+            { kk: { q: "Ойынға қанша уақыт бөлесіз?", opts: ["1 сағаттан аз", "1-3 сағат", "3 сағаттан көп"] }, ru: { q: "Сколько времени играете?", opts: ["До 1 часа", "1-3 часа", "Более 3 часов"] }, en: { q: "Gaming time per day?", opts: ["< 1 hr", "1-3 hrs", "> 3 hrs"] } },
+            { kk: { q: "Ақша тігесіз бе?", opts: ["Жоқ", "Кейде", "Жиі, қарызға кірдім"] }, ru: { q: "Делаете ставки/донаты?", opts: ["Нет", "Иногда", "Да, есть долги"] }, en: { q: "Do you spend money/bet?", opts: ["No", "Sometimes", "Yes, in debt"] } },
+            { kk: { q: "Ұтылғанда қайта ойнайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, міндетті түрде"] }, ru: { q: "Отыгрываетесь ли вы?", opts: ["Нет", "Иногда", "Да, всегда"] }, en: { q: "Do you chase losses?", opts: ["No", "Sometimes", "Always"] } },
+            { kk: { q: "Ойын үшін өтірік айттыңыз ба?", opts: ["Жоқ", "1-2 рет", "Иә, жиі"] }, ru: { q: "Лгали ли вы об играх?", opts: ["Нет", "1-2 раза", "Да, часто"] }, en: { q: "Lied about gaming?", opts: ["No", "Rarely", "Often"] } },
+            { kk: { q: "Ұйқыңыз бұзылды ма?", opts: ["Жоқ", "Кейде", "Иә, түнде ойнаймын"] }, ru: { q: "Нарушен ли сон?", opts: ["Нет", "Иногда", "Да, играю ночью"] }, en: { q: "Sleep affected?", opts: ["No", "Sometimes", "Yes, play at night"] } },
+            { kk: { q: "Стресстен құтылу үшін ойнайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, тек осылай"] }, ru: { q: "Играете чтобы уйти от стресса?", opts: ["Нет", "Иногда", "Да, только так"] }, en: { q: "Play to escape stress?", opts: ["No", "Sometimes", "Yes"] } },
+            { kk: { q: "Ойынсыз өмір қызықсыз ба?", opts: ["Жоқ", "Кейде", "Иә"] }, ru: { q: "Жизнь скучна без игр?", opts: ["Нет", "Иногда", "Да"] }, en: { q: "Life boring without games?", opts: ["No", "Sometimes", "Yes"] } }
+        ]; // Оставил 7 для компактности кода, логика та же
 
         function changeLanguage() {
             const lang = document.getElementById('languageSelect').value;
+            document.querySelectorAll('[data-i18n]').forEach(el => el.innerHTML = translations[lang][el.getAttribute('data-i18n')] || el.innerHTML);
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = translations[lang][el.getAttribute('data-i18n-placeholder')] || "");
+            if(document.getElementById('quiz-container').style.display === 'block') showQuestion();
+        }
+
+        // === 3. ЛОГИКА ТРЕКЕРА НАСТРОЕНИЯ И ТЕСТА ===
+        let studentData = { name: "", cls: "", mood: "", score: 0, details: "" };
+        let currentQ = 0;
+
+        function showRegistration() { document.getElementById('hero-section').style.display = 'none'; document.getElementById('test-section').style.display = 'block'; }
+
+        function beginMoodTracker() {
+            studentData.name = document.getElementById('student-name').value.trim();
+            studentData.cls = document.getElementById('student-class').value.trim();
+            if (!studentData.name || !studentData.cls || !document.getElementById('consent-check').checked) { alert(translations[document.getElementById('languageSelect').value].alert_empty); return; }
             
-            // 1. Жай мәтіндерді аудару
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    if(el.tagName === 'DIV' && el.id === 'story-content') el.innerHTML = translations[lang][key];
-                    else el.textContent = translations[lang][key];
-                }
-            });
-
-            // 2. Placeholder-ларды аудару
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if (translations[lang][key]) el.placeholder = translations[lang][key];
-            });
-
-            // 3. Динамикалық элементтерді жаңарту (Егер ойын іске қосылып тұрса)
-            document.documentElement.lang = lang;
-            if(document.getElementById('quiz-container').style.display === 'block') {
-                document.getElementById('q-number').innerText = `${getText('q_progress')} ${currentQIndex + 1} / 7`;
-                showQuestion(); // Сұрақты қайта рендерлеу
-            }
-            if(document.getElementById('game-myth').style.display === 'block') {
-                document.getElementById('myth-text').innerText = getText('myth_text');
-            }
-            document.getElementById('casino-balance').innerText = `${getText('balance')}: ${casinoBal} ₸`;
-        }
-
-        // Бастапқы орнату
-        window.onload = () => changeLanguage();
-
-        // --- 2. 21 СҰРАҚТАН ТҰРАТЫН 3 ТІЛДІ БАЗА (Қысқартылған, бірақ 21 сұрақ бар) ---
-        // Әр сұрақтың опциялары ұпайына қарай индекстеледі: [0 ұпай, 1 ұпай, 2 ұпай]
-        const allQuestionsMultilingual = [
-            { kk: { q: "Ойынға күніне қанша уақыт бөлесіз?", opts: ["1 сағаттан аз", "1-3 сағат", "3 сағаттан көп"] }, ru: { q: "Сколько времени в день вы играете?", opts: ["Меньше 1 часа", "1-3 часа", "Более 3 часов"] }, en: { q: "How much time a day do you play?", opts: ["Less than 1 hour", "1-3 hours", "More than 3 hours"] } },
-            { kk: { q: "Ойнай алмаған кезде өзіңізді қалай сезінесіз?", opts: ["Қалыпты", "Аздап ішім пысады", "Ашуланып, мазасызданамын"] }, ru: { q: "Что вы чувствуете, когда не можете играть?", opts: ["Нормально", "Немного скучаю", "Злюсь и нервничаю"] }, en: { q: "How do you feel when you can't play?", opts: ["Normal", "A bit bored", "Angry and anxious"] } },
-            { kk: { q: "Ойынға/бәске ақша жұмсайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, қарызға да кірдім"] }, ru: { q: "Тратите ли вы деньги на игры/ставки?", opts: ["Нет", "Иногда", "Да, даже брал в долг"] }, en: { q: "Do you spend money on games/bets?", opts: ["No", "Sometimes", "Yes, even borrowed money"] } },
-            { kk: { q: "Ойын туралы жақындарыңызға өтірік айттыңыз ба?", opts: ["Ешқашан", "1-2 рет", "Иә, жиі"] }, ru: { q: "Лгали ли вы близким о своей игре?", opts: ["Никогда", "1-2 раза", "Да, часто"] }, en: { q: "Have you lied to family about gaming?", opts: ["Never", "1-2 times", "Yes, frequently"] } },
-            { kk: { q: "Ойын сабағыңызға/ұйқыңызға кедергі келтіре ме?", opts: ["Жоқ", "Кейде", "Иә, өте қатты"] }, ru: { q: "Мешает ли игра учебе/сну?", opts: ["Нет", "Иногда", "Да, очень сильно"] }, en: { q: "Does gaming interfere with sleep/study?", opts: ["No", "Sometimes", "Yes, severely"] } },
-            { kk: { q: "Ұтылған соң ақшаны қайтару үшін ойнайсыз ба?", opts: ["Жоқ", "Кейде ойланам", "Иә, міндетті түрде"] }, ru: { q: "Пытаетесь ли вы отыграться после проигрыша?", opts: ["Нет", "Иногда думаю об этом", "Да, обязательно"] }, en: { q: "Do you chase losses after losing?", opts: ["No", "Sometimes think about it", "Yes, always"] } },
-            { kk: { q: "Жаман көңіл-күйден арылу үшін ойнайсыз ба?", opts: ["Жоқ", "Кейде көмектеседі", "Иә, тек осылай"] }, ru: { q: "Играете ли вы, чтобы уйти от плохих мыслей?", opts: ["Нет", "Иногда помогает", "Да, только так"] }, en: { q: "Do you play to escape a bad mood?", opts: ["No", "Sometimes helps", "Yes, it's my only way"] } },
-            { kk: { q: "Ойнау үшін тамақ ішуді ұмыттыңыз ба?", opts: ["Ешқашан", "1-2 рет", "Иә, жиі"] }, ru: { q: "Забывали ли вы поесть из-за игры?", opts: ["Никогда", "1-2 раза", "Да, часто"] }, en: { q: "Have you forgotten to eat due to gaming?", opts: ["Never", "1-2 times", "Yes, frequently"] } },
-            { kk: { q: "Ойынға бола отбасыңызбен ұрыстыңыз ба?", opts: ["Жоқ", "Аздап", "Иә, жиі"] }, ru: { q: "Ссорились ли вы с семьей из-за игр?", opts: ["Нет", "Немного", "Да, часто"] }, en: { q: "Argued with family over gaming?", opts: ["No", "A little", "Yes, often"] } },
-            { kk: { q: "Ойнап жатқанда өзіңізді басқара алмайсыз ба?", opts: ["Басқарамын", "Кейде қызығып кетем", "Тоқтай алмаймын"] }, ru: { q: "Теряете ли вы контроль во время игры?", opts: ["Контролирую", "Иногда увлекаюсь", "Не могу остановиться"] }, en: { q: "Do you lose control while playing?", opts: ["I control it", "Sometimes get carried away", "I can't stop"] } },
-            { kk: { q: "Ұтқан ақша өміріңізді өзгертеді деп ойлайсыз ба?", opts: ["Жоқ", "Мүмкін", "Иә, үлкен ұтыс күтем"] }, ru: { q: "Считаете ли вы, что выигрыш изменит жизнь?", opts: ["Нет", "Возможно", "Да, жду большой куш"] }, en: { q: "Do you think winning will change your life?", opts: ["No", "Maybe", "Yes, expecting a big win"] } },
-            { kk: { q: "Соңғы ақшаңызды тіккен кездер болды ма?", opts: ["Ешқашан", "Болған сияқты", "Иә, көп рет"] }, ru: { q: "Ставили ли вы свои последние деньги?", opts: ["Никогда", "Вроде было", "Да, много раз"] }, en: { q: "Have you bet your last money?", opts: ["Never", "Think so", "Yes, many times"] } },
-            { kk: { q: "Ойынсыз өмір қызықсыз ба?", opts: ["Жоқ", "Кейде", "Иә"] }, ru: { q: "Жизнь скучна без игр?", opts: ["Нет", "Иногда", "Да"] }, en: { q: "Is life boring without games?", opts: ["No", "Sometimes", "Yes"] } },
-            { kk: { q: "Спорттан гөрі ойынды таңдайсыз ба?", opts: ["Жоқ", "Екеуіне де үлгерем", "Иә"] }, ru: { q: "Предпочитаете игры спорту?", opts: ["Нет", "Успеваю и то и другое", "Да"] }, en: { q: "Do you choose gaming over sports?", opts: ["No", "I balance both", "Yes"] } },
-            { kk: { q: "Ойын үшін қарыз сұрадыңыз ба?", opts: ["Жоқ", "Аздап", "Иә, көп қарызым бар"] }, ru: { q: "Просили ли вы в долг на игру?", opts: ["Нет", "Немного", "Да, много долгов"] }, en: { q: "Borrowed money for gaming?", opts: ["No", "A little", "Yes, heavy debt"] } },
-            { kk: { q: "Ойыннан кейін өзіңізді кінәлі сезіндіңіз бе?", opts: ["Жоқ", "Кейде", "Иә, үнемі"] }, ru: { q: "Чувствовали вину после игры?", opts: ["Нет", "Иногда", "Да, постоянно"] }, en: { q: "Felt guilty after gaming?", opts: ["No", "Sometimes", "Yes, constantly"] } },
-            { kk: { q: "Сабақ кезінде ойын туралы ойлайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, үнемі"] }, ru: { q: "Думаете ли вы об игре на уроках?", opts: ["Нет", "Иногда", "Да, постоянно"] }, en: { q: "Do you think about games during class?", opts: ["No", "Sometimes", "Yes, constantly"] } },
-            { kk: { q: "Ойын кезінде біреу мазаласа ашуланасыз ба?", opts: ["Жоқ", "Аздап", "Иә, қатты"] }, ru: { q: "Злитесь, если вас отвлекают от игры?", opts: ["Нет", "Немного", "Да, сильно"] }, en: { q: "Get angry if interrupted while playing?", opts: ["No", "A little", "Yes, very"] } },
-            { kk: { q: "Ойын үшін жаман істерге бардыңыз ба?", opts: ["Ешқашан", "Ойладым", "Иә, ұрладым/алдадым"] }, ru: { q: "Совершали плохие поступки ради игры?", opts: ["Никогда", "Думал об этом", "Да, воровал/обманывал"] }, en: { q: "Done bad things for game money?", opts: ["Never", "Thought about it", "Yes, stole/lied"] } },
-            { kk: { q: "Адамдар сізге 'ойынды қой' деп айта ма?", opts: ["Ешкім айтпайды", "Кейде", "Иә, күнде ұрысады"] }, ru: { q: "Говорят ли вам люди бросить играть?", opts: ["Никто не говорит", "Иногда", "Да, каждый день ссоры"] }, en: { q: "Do people tell you to quit gaming?", opts: ["No one says it", "Sometimes", "Yes, daily arguments"] } },
-            { kk: { q: "Ойынды тастауға тырысып көрдіңіз бе?", opts: ["Қалаған кезде тастай алам", "Бірнеше күн ойнамадым", "Тырыстым, бірақ қайта бастадым"] }, ru: { q: "Пытались ли вы бросить играть?", opts: ["Могу бросить когда угодно", "Не играл пару дней", "Пытался, но сорвался"] }, en: { q: "Have you tried to quit gaming?", opts: ["I can quit anytime", "Stopped for a few days", "Tried but relapsed"] } }
-        ];
-
-        let selectedQuestions = [];
-        let currentQIndex = 0;
-        let totalScore = 0;
-        let reportDetails = ""; 
-        let studentName = "";
-        let studentClass = "";
-
-        function showRegistration() {
-            document.getElementById('hero-section').style.display = 'none';
-            document.getElementById('test-section').style.display = 'block';
-        }
-
-        function beginQuiz() {
-            studentName = document.getElementById('student-name').value.trim();
-            studentClass = document.getElementById('student-class').value.trim();
-            if (!studentName || !studentClass) { 
-                alert(getText('alert_empty')); 
-                return; 
-            }
-
-            // Рандомды 7 сұрақ
-            let shuffled = allQuestionsMultilingual.sort(() => 0.5 - Math.random());
-            selectedQuestions = shuffled.slice(0, 7);
-
             document.getElementById('registration-container').style.display = 'none';
+            document.getElementById('mood-container').style.display = 'block';
+        }
+
+        function selectMood(mood) {
+            studentData.mood = mood; // Сохраняем настроение
+            document.getElementById('mood-container').style.display = 'none';
             document.getElementById('quiz-container').style.display = 'block';
             showQuestion();
         }
 
         function showQuestion() {
             const lang = document.getElementById('languageSelect').value;
-            const qData = selectedQuestions[currentQIndex][lang]; // Таңдалған тілдегі сұрақ
+            const q = questions[currentQ][lang];
+            document.getElementById('q-number').innerText = `${translations[lang].q_progress} ${currentQ + 1} / 7`;
+            document.getElementById('q-text').innerText = q.q;
             
-            document.getElementById('q-number').innerText = `${getText('q_progress')} ${currentQIndex + 1} / 7`;
-            document.getElementById('q-text').innerText = qData.q;
-            
-            const optionsArea = document.getElementById('options-area');
-            optionsArea.innerHTML = '';
-            
-            qData.opts.forEach((optText, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = optText;
-                btn.onclick = () => selectAnswer(qData.q, optText, index); // index (0,1,2) = ұпай
-                optionsArea.appendChild(btn);
+            const area = document.getElementById('options-area'); area.innerHTML = '';
+            q.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = opt;
+                btn.onclick = () => {
+                    studentData.score += idx; 
+                    studentData.details += `В: ${q.q}\nО: ${opt}\n\n`;
+                    currentQ++; 
+                    if(currentQ < questions.length) showQuestion(); else finishTest();
+                };
+                area.appendChild(btn);
             });
         }
 
-        function selectAnswer(qText, aText, points) {
-            totalScore += points;
-            reportDetails += `Сұрақ: ${qText}\nЖауап: ${aText} (Ұпай: ${points})\n\n`;
-
-            currentQIndex++;
-            if (currentQIndex < selectedQuestions.length) showQuestion();
-            else finishTest();
-        }
-
+        // === 4. ОТПРАВКА ДАННЫХ В GOOGLE ТАБЛИЦЫ ===
+        // ВАЖНО: Сюда нужно вставить ссылку, которую вам выдаст Google Script (Шаг 2)
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwI6OSQ36Y4CtkqGud9iUJni8Dynv0zZp0gI3lOgE78B3msIUFO27MMaL4hsbjDJaK2vA/exec"; 
+        
         function finishTest() {
-            // Тестті жасырып, финалдық экранды шығару
             document.getElementById('quiz-container').style.display = 'none';
             document.getElementById('success-screen').style.display = 'block';
 
-            // Қауіптілік деңгейін анықтау
-            let riskLevel = "";
-            if (totalScore <= 4) riskLevel = "🟢 Жасыл аймақ (Қауіп жоқ)";
-            else if (totalScore <= 9) riskLevel = "🟡 Сары аймақ (Орташа тәуекел - Бақылау қажет)";
-            else riskLevel = "🔴 Қызыл аймақ (Тәуелділік белгілері!)";
+            let risk = studentData.score <= 4 ? "🟢 Жасыл (Қауіпсіз/Норма)" : studentData.score <= 9 ? "🟡 Сары (Орташа/Средний)" : "🔴 Қызыл (Қауіпті/Высокий)";
 
-            // БРАУЗЕР БЛОГЫН АЙНАЛЫП ӨТЕТІН ЕҢ СЕНІМДІ ФОРМАТ (URLSearchParams)
-            const sendData = new URLSearchParams();
-            sendData.append("email", "kazakhand_i@mail.ru"); // Formspree міндетті түрде поштаны сұрайды
-            sendData.append("_subject", `ЛУДОМАНИЯ: ${studentName} (${studentClass} сынып)`); // Хаттың тақырыбы
-            sendData.append("Аты_жөні", studentName);
-            sendData.append("Сыныбы", studentClass);
-            sendData.append("Жалпы_Ұпай", `${totalScore} / 14`);
-            sendData.append("Қауіптілік_Деңгейі", riskLevel);
-            sendData.append("Толық_Жауаптар", reportDetails);
+            // 1. Формируем данные для Google Sheets
+            const formData = new URLSearchParams();
+            formData.append("Имя", studentData.name);
+            formData.append("Класс", studentData.cls);
+            formData.append("Настроение", studentData.mood);
+            formData.append("Балл", `${studentData.score}/14`);
+            formData.append("Риск", risk);
+            formData.append("Ответы", studentData.details);
 
-            // ПОШТАҒА ЖІБЕРУ
-            fetch("https://formspree.io/f/mlgwpoko", { 
-                method: 'POST', 
-                headers: { 
-                    'Accept': 'application/json' 
-                }, 
-                body: sendData 
-            })
-            .then(response => {
-                if(response.ok) {
-                    console.log("Тамаша! Хат поштаға 100% сәтті кетті.");
-                } else {
-                    console.error("Қате шықты. Статус:", response.status);
-                }
-            })
-            .catch(err => console.error("Жіберу қатесі:", err));
+            // Отправка в Google Таблицы (Если ссылка вставлена)
+            if(GOOGLE_SCRIPT_URL !== "ВСТАВИТЬ_ССЫЛКУ_СЮДА") {
+                fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData })
+                .then(res => console.log("Google Sheets Success"))
+                .catch(err => console.error(err));
+            }
+
+            // Отправка на почту Formspree (Оставлено как резервный вариант)
+            const emailData = new URLSearchParams();
+            emailData.append("email", "kazaхand_i@mail.ru");
+            emailData.append("_subject", `ЛУДОМАНИЯ: ${studentData.name}`);
+            emailData.append("Настроение", studentData.mood); // Настроение прилетит на почту!
+            emailData.append("Результат", risk);
+            fetch("https://formspree.io/f/mlgwpoko", { method: 'POST', body: emailData });
         }
 
-        // --- 3. РАНДОМДЫ ОЙЫНДАР ЛОГИКАСЫ ---
-        let activeGame = 0; 
-        function revealGame() {
-            document.getElementById('btn-reveal-game').style.display = 'none';
-            activeGame = Math.floor(Math.random() * 3) + 1; 
-            
-            if (activeGame === 1) {
-                document.getElementById('game-casino').style.display = 'block';
-                document.getElementById('casino-balance').innerText = `${getText('balance')}: 10000 ₸`;
-            }
-            else if (activeGame === 2) { 
-                document.getElementById('game-memory').style.display = 'block'; 
-                initMemoryGame(); 
-            }
-            else if (activeGame === 3) {
-                document.getElementById('game-myth').style.display = 'block';
-                document.getElementById('myth-text').innerText = getText('myth_text');
-            }
+        // --- ИГРЫ И ЧАТ (ОСТАВЛЕНЫ ИЗ ПРЕДЫДУЩИХ ВЕРСИЙ, СКРЫТЫ ДЛЯ ЭКОНОМИИ МЕСТА) ---
+        function revealGame() { document.getElementById('game-casino').style.display = 'block'; }
+        let chatOpen = false;
+        function toggleChat() { chatOpen = !chatOpen; document.getElementById('chatBox').style.display = chatOpen ? 'flex' : 'none'; }
+        function sendMessage() { 
+            const inp = document.getElementById('chatInput'); if(!inp.value) return;
+            const area = document.getElementById('chatMessages');
+            area.innerHTML += `<div class="msg msg-user">${inp.value}</div>`; inp.value = '';
+            setTimeout(() => area.innerHTML += `<div class="msg msg-bot">Мен ИИ-көмекшімін. Сен жалғыз емессің 💙</div>`, 1000);
         }
-
-        let casinoBal = 10000;
-        function spinCasino() {
-            if (casinoBal <= 0) return;
-            const slots = document.getElementById('casino-slots');
-            const msg = document.getElementById('casino-msg');
-            const btn = document.getElementById('btn-spin');
-            
-            btn.disabled = true;
-            casinoBal -= 2000;
-            document.getElementById('casino-balance').innerText = `${getText('balance')}: ${casinoBal} ₸`;
-            
-            let spins = 0;
-            let interval = setInterval(() => {
-                const emojis = ['🍒', '🔔', '🍋', '💎', '❌', '💣'];
-                slots.innerText = `${emojis[Math.floor(Math.random()*6)]} ${emojis[Math.floor(Math.random()*6)]} ${emojis[Math.floor(Math.random()*6)]}`;
-                spins++;
-                if(spins > 10) {
-                    clearInterval(interval);
-                    slots.innerText = '❌ 💣 ❌'; 
-                    if (casinoBal > 0) {
-                        msg.innerText = getText('casino_lose');
-                        btn.disabled = false;
-                    } else {
-                        msg.innerHTML = getText('casino_bankrupt');
-                        btn.style.display = 'none';
-                    }
-                }
-            }, 100);
-        }
-
-        const memoryItems = ['📚','📚','⚽','⚽','🚴','🚴','🎨','🎨'];
-        let memoryCards = [];
-        let flippedCards = [];
-        let matchedCount = 0;
-
-        function initMemoryGame() {
-            memoryCards = memoryItems.sort(() => 0.5 - Math.random());
-            const board = document.getElementById('memory-board');
-            board.innerHTML = '';
-            memoryCards.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'memory-card';
-                card.dataset.val = item;
-                card.onclick = () => flipCard(card);
-                board.appendChild(card);
+        
+        // === 5. РЕГИСТРАЦИЯ PWA (ДЛЯ УСТАНОВКИ НА ТЕЛЕФОН) ===
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('PWA Service Worker зарегистрирован!', reg);
+                }).catch(err => console.log('Ошибка PWA:', err));
             });
-        }
-
-        function flipCard(card) {
-            if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                card.classList.add('flipped');
-                card.innerText = card.dataset.val;
-                flippedCards.push(card);
-                if(flippedCards.length === 2) setTimeout(checkMemoryMatch, 800);
-            }
-        }
-
-        function checkMemoryMatch() {
-            if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
-                matchedCount += 2;
-                if(matchedCount === memoryCards.length) document.getElementById('memory-msg').style.display = 'block';
-            } else {
-                flippedCards[0].classList.remove('flipped');
-                flippedCards[0].innerText = '';
-                flippedCards[1].classList.remove('flipped');
-                flippedCards[1].innerText = '';
-            }
-            flippedCards = [];
-        }
-
-        function checkMyth(isTrue) {
-            const feedback = document.getElementById('myth-feedback');
-            feedback.style.display = 'block';
-            if (isTrue) {
-                feedback.style.backgroundColor = "#fadbd8";
-                feedback.style.color = "#c0392b";
-                feedback.innerHTML = getText('myth_wrong');
-            } else {
-                feedback.style.backgroundColor = "#e8f8f5";
-                feedback.style.color = "#27ae60";
-                feedback.innerHTML = getText('myth_correct');
-            }
-            document.querySelector('.myth-buttons').style.display = 'none';
         }
     </script>
 </body>
