@@ -424,7 +424,7 @@
             });
         }
 
-        const GOOGLE_SCRIPT_URL = "ВСТАВИТЬ_ССЫЛКУ_СЮДА"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwI6OSQ36Y4CtkqGud9iUJni8Dynv0zZp0gI3lOgE78B3msIUFO27MMaL4hsbjDJaK2vA/exec"; 
         
         function finishTest() {
             document.getElementById('quiz-container').style.display = 'none';
@@ -437,7 +437,13 @@
             formData.append("Настроение", studentData.mood); formData.append("Балл", `${studentData.score}/14`);
             formData.append("Риск", risk); formData.append("Ответы", studentData.details);
 
-            if(GOOGLE_SCRIPT_URL !== "ВСТАВИТЬ_ССЫЛКУ_СЮДА") fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData }).catch(e=>e);
+            if(GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwI6OSQ36Y4CtkqGud9iUJni8Dynv0zZp0gI3lOgE78B3msIUFO27MMaL4hsbjDJaK2vA/exec") {
+                fetch(GOOGLE_SCRIPT_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', // Эта строчка снимает блокировку браузера!
+                    body: formData 
+                }).then(() => console.log("Google Sheets Success")).catch(e=>console.error(e));
+            }
 
             const emailData = new URLSearchParams();
             emailData.append("email", "kazaхand_i@mail.ru");
@@ -622,3 +628,4 @@
     </script>
 </body>
 </html>
+
