@@ -433,22 +433,26 @@
             let risk = studentData.score <= 4 ? "🟢 Жасыл" : studentData.score <= 9 ? "🟡 Сары" : "🔴 Қызыл";
 
             const formData = new URLSearchParams();
-            formData.append("Имя", studentData.name); formData.append("Класс", studentData.cls);
-            formData.append("Настроение", studentData.mood); formData.append("Балл", `${studentData.score}/14`);
-            formData.append("Риск", risk); formData.append("Ответы", studentData.details);
+            formData.append("Имя", studentData.name); 
+            formData.append("Класс", studentData.cls);
+            formData.append("Настроение", studentData.mood); 
+            formData.append("Балл", `${studentData.score}/14`);
+            formData.append("Риск", risk); 
+            formData.append("Ответы", studentData.details);
 
-            if(GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwI6OSQ36Y4CtkqGud9iUJni8Dynv0zZp0gI3lOgE78B3msIUFO27MMaL4hsbjDJaK2vA/exec") {
-                fetch(GOOGLE_SCRIPT_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', // Эта строчка снимает блокировку браузера!
-                    body: formData 
-                }).then(() => console.log("Google Sheets Success")).catch(e=>console.error(e));
-            }
+            // МЫ УБРАЛИ БЛОКИРУЮЩИЙ IF. ТЕПЕРЬ ДАННЫЕ ТОЧНО УЛЕТЯТ!
+            fetch(GOOGLE_SCRIPT_URL, { 
+                method: 'POST', 
+                mode: 'no-cors',
+                body: formData 
+            }).then(() => console.log("Google Sheets Success")).catch(e => console.error(e));
 
+            // Отправка на почту
             const emailData = new URLSearchParams();
             emailData.append("email", "kazaхand_i@mail.ru");
             emailData.append("_subject", `ЛУДОМАНИЯ: ${studentData.name}`);
-            emailData.append("Настроение", studentData.mood); emailData.append("Результат", risk);
+            emailData.append("Настроение", studentData.mood); 
+            emailData.append("Результат", risk);
             fetch("https://formspree.io/f/mlgwpoko", { method: 'POST', body: emailData });
         }
 
@@ -628,4 +632,5 @@
     </script>
 </body>
 </html>
+
 
