@@ -1,0 +1,16 @@
+{
+  "name": "MindGuard AI",
+  "short_name": "MindGuard",
+  "description": "Платформа для защиты от игровой зависимости",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#2A5C82",
+  "theme_color": "#2A5C82",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2092/2092663.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
