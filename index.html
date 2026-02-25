@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* БАЗОВЫЕ ПЕРЕМЕННЫЕ ТЕМЫ (МЕНЯЮТСЯ ЧЕРЕЗ JS) */
         :root {
             --primary-color: #2A5C82; 
             --accent-color: #FF6B6B;  
@@ -26,76 +25,97 @@
             --success: #2ecc71;
             --warning: #f1c40f;
             --border: #eeeeee;
+            --btn-text: #ffffff;
+            --heading-color: #2A5C82;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        ::placeholder { color: var(--text-light); opacity: 0.7; }
 
-        /* HEADER И ПАЛИТРА ТЕМ */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 15px;}
-        .logo { font-size: 22px; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid var(--border);}
+        .logo { font-size: 22px; font-weight: 700; color: var(--heading-color); display: flex; align-items: center; }
         .logo i { margin-right: 10px; font-size: 26px; }
         
         .header-controls { display: flex; align-items: center; gap: 15px; }
-        .theme-palette { display: flex; gap: 8px; align-items: center; padding: 5px 10px; background: var(--bg-light); border-radius: 20px; border: 1px solid var(--border);}
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .theme-dot:hover { transform: scale(1.2); }
-        .theme-dot.active { border-color: var(--text-dark); transform: scale(1.1); }
         
+        .color-picker-wrapper { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; background: var(--bg-light); cursor: pointer; color: var(--text-dark); font-weight: 600; font-size: 14px;}
+        .color-picker-wrapper:hover { border-color: var(--primary-color); }
+        .color-picker { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; padding: 0; }
+        .color-picker::-webkit-color-swatch { border-radius: 50%; border: 2px solid var(--white); box-shadow: 0 0 0 1px var(--border); }
+        .color-picker::-moz-color-swatch { border-radius: 50%; border: 2px solid var(--white); box-shadow: 0 0 0 1px var(--border); }
+
         .lang-wrapper { display: flex; align-items: center; border: 1px solid var(--border); padding: 5px 10px; border-radius: 20px; background: var(--bg-light); color: var(--text-dark); }
         .lang-switch select { border: none; font-size: 14px; outline: none; background: transparent; font-family: 'Montserrat', sans-serif; cursor: pointer; color: var(--text-dark); }
 
-        /* ОСНОВНОЙ КОНТЕНТ */
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 5%; min-height: 80vh; }
         .hero-content { flex: 1; padding-right: 50px; }
-        .hero h1 { font-size: 42px; font-weight: 700; margin-bottom: 20px; color: var(--primary-color); line-height: 1.2; }
+        .hero h1 { font-size: 42px; font-weight: 700; margin-bottom: 20px; color: var(--heading-color); line-height: 1.2; }
         .hero p { font-size: 18px; margin-bottom: 40px; color: var(--text-light); }
-        .btn { display: inline-block; padding: 15px 30px; font-size: 16px; font-weight: 600; color: #fff !important; background: var(--accent-color); border: none; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 20px -10px var(--accent-color); text-align: center; }
-        .btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+        
+        .btn { display: inline-block; padding: 15px 30px; font-size: 16px; font-weight: 600; color: var(--btn-text) !important; background: var(--primary-color); border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.15); text-align: center; }
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .btn-accent { background: var(--accent-color); }
+        
         .hero-image { flex: 1; display: flex; justify-content: center; }
         .hero-image img { max-width: 100%; height: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border-radius: 20px; }
 
-        /* ФОРМЫ И ТЕСТЫ */
         #test-section { display: none; max-width: 700px; margin: 50px auto; background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; border: 1px solid var(--border); }
-        .form-input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid var(--border); background: var(--bg-light); color: var(--text-dark); border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; outline: none; transition: 0.3s; }
+        .form-input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid var(--border); background: var(--bg-light); color: var(--text-dark); border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; outline: none; }
         .form-input:focus { border-color: var(--primary-color); }
         
-        /* ТРЕКЕР НАСТРОЕНИЯ */
         #mood-container { display: none; text-align: center; animation: fadeIn 0.5s; }
         .mood-emojis { display: flex; justify-content: center; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
-        .mood-btn { font-size: 40px; background: var(--bg-light); border: 2px solid var(--border); border-radius: 15px; padding: 10px 20px; cursor: pointer; transition: 0.3s; }
+        .mood-btn { font-size: 40px; background: var(--bg-light); border: 2px solid var(--border); border-radius: 15px; padding: 10px 20px; cursor: pointer; }
         .mood-btn:hover { transform: scale(1.1); background: var(--white); border-color: var(--primary-color); }
 
-        .question-text { font-size: 22px; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; }
+        .question-text { font-size: 22px; font-weight: 700; color: var(--heading-color); margin-bottom: 30px; }
         .options-container { display: flex; flex-direction: column; gap: 15px; }
-        .option-btn { background-color: var(--bg-light); color: var(--text-dark); border: 2px solid var(--border); padding: 15px 20px; border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; cursor: pointer; transition: 0.2s; text-align: left; }
+        .option-btn { background-color: var(--bg-light); color: var(--text-dark); border: 2px solid var(--border); padding: 15px 20px; border-radius: 10px; font-size: 16px; font-family: 'Montserrat', sans-serif; cursor: pointer; text-align: left; }
         .option-btn:hover { border-color: var(--primary-color); background-color: var(--white); }
         
-        .success-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; filter: brightness(0.9);}
-        .game-container { display: none; margin-top: 30px; padding: 20px; background: var(--bg-light); border-radius: 15px; border: 2px dashed var(--border); }
+        .success-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; filter: brightness(0.95);}
+        .game-container { display: none; margin-top: 30px; padding: 20px; background: var(--bg-light); border-radius: 15px; border: 2px dashed var(--primary-color); }
         
-        /* ИГРЫ */
         .casino-display { font-size: 40px; letter-spacing: 15px; margin: 20px 0; background: var(--white); padding: 15px; border-radius: 10px; border: 3px solid var(--border); color: var(--text-dark);}
         .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-        .memory-card { background: var(--primary-color); height: 70px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 30px; cursor: pointer; color: transparent; transition: 0.3s; }
+        .memory-card { background: var(--primary-color); height: 70px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 30px; cursor: pointer; color: transparent; }
         .memory-card.flipped { background: var(--white); color: var(--text-dark); border: 2px solid var(--primary-color); cursor: default; }
         .myth-card { background: var(--white); color: var(--text-dark); padding: 30px; border-radius: 10px; font-size: 18px; font-weight: bold; border: 1px solid var(--border); margin-bottom: 20px; }
 
-        /* ИИ ЧАТ-БОТ */
         .chat-widget { position: fixed; bottom: 30px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; }
-        .chat-btn { width: 60px; height: 60px; background: var(--primary-color); color: #fff; border-radius: 50%; font-size: 26px; cursor: pointer; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;}
+        .chat-btn { width: 60px; height: 60px; background: var(--primary-color); color: var(--btn-text); border-radius: 50%; font-size: 26px; cursor: pointer; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+        .chat-btn:hover { transform: scale(1.1); }
         .chat-box { display: none; width: 350px; height: 450px; background: var(--white); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); flex-direction: column; overflow: hidden; position: absolute; bottom: 80px; right: 0; border: 1px solid var(--border); }
-        .chat-header { background: var(--primary-color); color: #fff; padding: 15px; display: flex; justify-content: space-between; }
+        .chat-header { background: var(--primary-color); color: var(--btn-text); padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .close-chat { cursor: pointer; color: var(--btn-text); border: none; background: transparent; font-size: 18px; opacity: 0.8; transition: 0.2s; }
+        .close-chat:hover { opacity: 1; transform: scale(1.1); }
+        
         .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-light); }
-        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; color: #fff; }
-        .msg-bot { background: #34495e; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .msg-user { background: var(--primary-color); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; line-height: 1.4; animation: fadeIn 0.3s ease; }
+        .msg-bot { background: var(--border); color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-user { background: var(--primary-color); color: var(--btn-text); align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        .typing-indicator { display: flex; align-items: center; gap: 5px; padding: 12px 15px; background: var(--border); border-radius: 15px; align-self: flex-start; border-bottom-left-radius: 2px; width: fit-content; }
+        .dot { width: 6px; height: 6px; background: var(--text-light); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
         .chat-input-area { display: flex; padding: 10px; background: var(--white); border-top: 1px solid var(--border); }
         .chat-input { flex: 1; padding: 10px; background: var(--bg-light); color: var(--text-dark); border: 1px solid var(--border); border-radius: 20px; outline: none; }
-        .chat-send-btn { background: var(--accent-color); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; margin-left: 10px; cursor: pointer; }
+        .chat-send-btn { background: var(--primary-color); color: var(--btn-text); border: none; width: 40px; height: 40px; border-radius: 50%; margin-left: 10px; cursor: pointer; }
+
+        .chat-notification { display: none; background: var(--accent-color); color: var(--btn-text); padding: 10px 15px; border-radius: 15px; font-size: 14px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 10px; position: relative; animation: bounceIn 0.5s ease; white-space: nowrap; cursor: pointer; }
+        .chat-notification::after { content: ''; position: absolute; bottom: -5px; right: 20px; width: 12px; height: 12px; background: var(--accent-color); transform: rotate(45deg); }
+        @keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-animation { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .attention-pulse { animation: pulse-animation 1.5s infinite; background-color: var(--accent-color) !important; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
+        .fadeInAnim { animation: fadeIn 0.5s ease; }
+
+        footer { text-align: center; padding: 30px 20px; background-color: var(--white); color: var(--text-light); margin-top: 50px; border-top: 1px solid var(--border);}
+
         @media (max-width: 768px) {
             .hero { flex-direction: column-reverse; text-align: center; padding: 20px 5%; }
             .hero-content { padding-right: 0; margin-top: 30px; }
@@ -107,10 +127,12 @@
 <body>
 
     <header>
-        <div class="logo"><i class="fas fa-shield-alt"></i> <span data-i18n="logo">MindGuard AI</span></div>
+        <div class="logo"><i class="fas fa-shield-alt"></i> <span data-i18n="logo">Лудоманияға қарсы AI</span></div>
         <div class="header-controls">
-            <div class="theme-palette" id="themePalette"></div>
-            
+            <label class="color-picker-wrapper" title="Сайттың түсін өзгерту / Изменить цвет сайта">
+                <i class="fas fa-palette"></i> Theme
+                <input type="color" id="themePicker" class="color-picker" value="#2A5C82">
+            </label>
             <div class="lang-wrapper">
                 <i class="fas fa-globe lang-icon"></i>
                 <div class="lang-switch">
@@ -137,9 +159,9 @@
         </div>
     </section>
 
-    <section id="test-section">
+    <section id="test-section" style="display: none;">
         <div id="registration-container">
-            <h2 data-i18n="reg_title" style="color: var(--primary-color); margin-bottom: 25px;">Өзіңізді таныстырыңыз</h2>
+            <h2 data-i18n="reg_title" style="color: var(--heading-color); margin-bottom: 25px;">Өзіңізді таныстырыңыз</h2>
             <div>
                 <input type="text" id="student-name" class="form-input" data-i18n-placeholder="placeholder_name" placeholder="Аты-жөніңіз...">
                 <input type="text" id="student-class" class="form-input" data-i18n-placeholder="placeholder_class" placeholder="Сыныбыңыз...">
@@ -151,8 +173,8 @@
             <button onclick="beginMoodTracker()" class="btn" style="width: 100%;"><span data-i18n="btn_start_quiz">Жалғастыру</span> <i class="fas fa-arrow-right"></i></button>
         </div>
 
-        <div id="mood-container">
-            <h2 data-i18n="mood_title" style="color: var(--primary-color);">Қазір өзіңізді қалай сезініп тұрсыз?</h2>
+        <div id="mood-container" style="display: none;">
+            <h2 data-i18n="mood_title" style="color: var(--heading-color);">Қазір өзіңізді қалай сезініп тұрсыз?</h2>
             <div class="mood-emojis">
                 <button class="mood-btn" onclick="selectMood('😭 Өте нашар / Ужасно')">😭</button>
                 <button class="mood-btn" onclick="selectMood('😔 Мұңды / Грустно')">😔</button>
@@ -165,29 +187,34 @@
 
         <div id="quiz-container" style="display: none;">
             <div class="question-number" id="q-number" style="color: var(--text-light);"></div>
+            <div id="q-hint" style="display:none; color: var(--accent-color); font-size: 13px; margin-bottom: 15px; font-weight: 600;"></div>
             <div class="question-text" id="q-text"></div>
             <div class="options-container" id="options-area"></div>
         </div>
 
-        <div id="success-screen">
+        <div id="success-screen" style="display: none;">
             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop" class="success-img">
-            <h2 class="story-title" data-i18n="success_title">Аяқталды! 🎉</h2>
+            <h2 class="story-title" data-i18n="success_title" style="color: var(--heading-color); font-size: 26px; margin-bottom: 15px;">Аяқталды! 🎉</h2>
             <div class="story-text" id="story-content" data-i18n="success_story"></div>
             <button onclick="revealGame()" id="btn-reveal-game" class="btn"><span data-i18n="btn_game">Шағын ойын</span> <i class="fas fa-gamepad"></i></button>
 
-            <div id="game-casino" class="game-container"><h3 data-i18n="game1_title">Иллюзияны бұзу</h3><div class="balance" id="casino-balance"></div><div class="casino-display" id="casino-slots">🍒 🔔 🍋</div><button onclick="spinCasino()" class="btn" id="btn-spin" data-i18n="game1_btn">Бәс тігу</button><p id="casino-msg" style="margin-top: 15px; font-weight: bold; color: var(--accent-color);"></p></div>
-            <div id="game-memory" class="game-container"><h3 data-i18n="game2_title">Пайдалы әдеттер</h3><div class="memory-grid" id="memory-board"></div><p id="memory-msg" style="margin-top: 15px; font-weight: bold; color: var(--success); display: none;" data-i18n="game2_win">Жарайсың!</p></div>
-            <div id="game-myth" class="game-container"><h3 data-i18n="game3_title">Миф пе?</h3><div class="myth-card" id="myth-text"></div><div class="myth-buttons"><button class="myth-btn btn-true" onclick="checkMyth(true)" data-i18n="game3_true">Ақиқат</button><button class="myth-btn btn-false" onclick="checkMyth(false)" data-i18n="game3_false">Миф</button></div><div id="myth-feedback" class="myth-feedback"></div></div>
-            <br><button onclick="location.reload()" class="btn" style="background: #95a5a6; padding: 10px 20px; font-size: 14px;"><i class="fas fa-home"></i></button>
+            <div id="game-casino" class="game-container"><h3 data-i18n="game1_title" style="color: var(--heading-color);">Иллюзияны бұзу</h3><div class="balance" id="casino-balance"></div><div class="casino-display" id="casino-slots">🍒 🔔 🍋</div><button onclick="spinCasino()" class="btn btn-accent" id="btn-spin" data-i18n="game1_btn">Бәс тігу</button><p id="casino-msg" style="margin-top: 15px; font-weight: bold; color: var(--accent-color);"></p></div>
+            <div id="game-memory" class="game-container"><h3 data-i18n="game2_title" style="color: var(--heading-color);">Пайдалы әдеттер</h3><div class="memory-grid" id="memory-board"></div><p id="memory-msg" style="margin-top: 15px; font-weight: bold; color: var(--success); display: none;"></p></div>
+            <div id="game-myth" class="game-container"><h3 data-i18n="game3_title" style="color: var(--heading-color);">Миф пе?</h3><div class="myth-card" id="myth-text"></div><div class="myth-buttons"><button class="btn" style="background: var(--success);" onclick="checkMyth(true)" data-i18n="game3_true">Ақиқат</button><button class="btn btn-accent" onclick="checkMyth(false)" data-i18n="game3_false">Миф</button></div><div id="myth-feedback" class="myth-feedback"></div></div>
+            <br><button onclick="location.reload()" class="btn" style="background: var(--border); color: var(--text-dark) !important; margin-top: 20px;"><i class="fas fa-home"></i></button>
         </div>
     </section>
 
     <div class="chat-widget">
+        <div id="chatNotification" class="chat-notification" onclick="toggleChat()" data-i18n="chat_notify">Көмек керек пе? 👋</div>
         <button class="chat-btn" onclick="toggleChat()" id="chatBtnIcon"><i class="fas fa-comment-dots"></i></button>
         <div class="chat-box" id="chatBox">
             <div class="chat-header">
-                <span><i class="fas fa-robot"></i> MindGuard AI</span>
-                <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+                <div style="display: flex; align-items: center;"><i class="fas fa-headset" style="margin-right: 8px;"></i> <span data-i18n="logo">Лудоманияға қарсы AI</span></div>
+                <div>
+                    <button class="close-chat" onclick="clearChat()" style="margin-right: 15px;" title="Очистить"><i class="fas fa-trash-alt"></i></button>
+                    <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+                </div>
             </div>
             <div class="chat-messages" id="chatMessages"></div>
             <div class="chat-input-area">
@@ -197,168 +224,401 @@
         </div>
     </div>
 
-    <script>
-        // === 1. 7 СТИЛЬНЫХ ТЕМ (ВИЗУАЛИЗАЦИЯ) ===
-        const themes = [
-            { name: "Default", primary: "#2A5C82", accent: "#FF6B6B", bgLight: "#F9FBFC", textDark: "#333333", white: "#ffffff", border: "#eeeeee", dot: "linear-gradient(45deg, #2A5C82, #FF6B6B)" },
-            { name: "Dark Neon", primary: "#00f3ff", accent: "#ff003c", bgLight: "#0b0c10", textDark: "#f5f6fa", white: "#1f2326", border: "#2f3640", dot: "linear-gradient(45deg, #0b0c10, #00f3ff)" },
-            { name: "Hacker", primary: "#00ff00", accent: "#00cc00", bgLight: "#000000", textDark: "#00ff00", white: "#0a0a0a", border: "#003300", dot: "linear-gradient(45deg, #000000, #00ff00)" },
-            { name: "Sunset", primary: "#ff7675", accent: "#fdcb6e", bgLight: "#fff0e6", textDark: "#2d3436", white: "#ffffff", border: "#ffeaa7", dot: "linear-gradient(45deg, #ff7675, #fdcb6e)" },
-            { name: "Ocean", primary: "#0984e3", accent: "#00b894", bgLight: "#e0f7fa", textDark: "#2c3e50", white: "#ffffff", border: "#81ecec", dot: "linear-gradient(45deg, #0984e3, #00b894)" },
-            { name: "Cyberpunk", primary: "#e056fd", accent: "#f9ca24", bgLight: "#130f40", textDark: "#dff9fb", white: "#30336b", border: "#535c68", dot: "linear-gradient(45deg, #130f40, #e056fd)" },
-            { name: "Minimal", primary: "#2f3542", accent: "#57606f", bgLight: "#ffffff", textDark: "#1e272e", white: "#f1f2f6", border: "#dfe4ea", dot: "linear-gradient(45deg, #ffffff, #2f3542)" }
-        ];
+    <footer>
+        <p data-i18n="footer_text">© 2026 "Лудоманияға қарсы AI" жобасы.</p>
+    </footer>
 
-        function applyTheme(index) {
+    <script>
+        // === 1. ГЕНЕРАТОР ДИНАМИЧЕСКИХ ТЕМ ===
+        const colorPicker = document.getElementById('themePicker');
+
+        function applyCustomColor(hex) {
+            let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
+            let luminance = 0.299*r + 0.587*g + 0.114*b;
             const root = document.documentElement;
-            const t = themes[index];
-            root.style.setProperty('--primary-color', t.primary);
-            root.style.setProperty('--accent-color', t.accent);
-            root.style.setProperty('--bg-light', t.bgLight);
-            root.style.setProperty('--text-dark', t.textDark);
-            root.style.setProperty('--white', t.white);
-            root.style.setProperty('--border', t.border);
+
+            root.style.setProperty('--primary-color', hex);
             
-            document.querySelectorAll('.theme-dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
-            // Сохраняем тему для PWA
-            localStorage.setItem('mindguard_theme', index);
+            let r1 = r/255, g1 = g/255, b1 = b/255;
+            let max = Math.max(r1,g1,b1), min = Math.min(r1,g1,b1);
+            let h, s, l = (max+min)/2;
+            if(max === min){ h = s = 0; } else {
+                let d = max-min; s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+                switch(max){ case r1: h = (g1-b1)/d + (g1<b1?6:0); break; case g1: h = (b1-r1)/d + 2; break; case b1: h = (r1-g1)/d + 4; break; }
+                h /= 6;
+            }
+            h = (h + 0.5) % 1; 
+            let hue2rgb = function(p, q, t){
+                if(t < 0) t += 1; if(t > 1) t -= 1; if(t < 1/6) return p + (q - p) * 6 * t;
+                if(t < 1/2) return q; if(t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p;
+            };
+            let q = l < 0.5 ? l * (1 + s) : l + s - l * s; let p = 2 * l - q;
+            root.style.setProperty('--accent-color', `rgb(${Math.round(hue2rgb(p,q,h+1/3)*255)}, ${Math.round(hue2rgb(p,q,h)*255)}, ${Math.round(hue2rgb(p,q,h-1/3)*255)})`);
+            root.style.setProperty('--btn-text', luminance > 160 ? '#111111' : '#ffffff');
+
+            if (luminance < 80) { 
+                root.style.setProperty('--bg-light', `rgb(${Math.round(r*0.1)}, ${Math.round(g*0.1)}, ${Math.round(b*0.1)})`);
+                root.style.setProperty('--white', `rgb(${Math.round(r*0.15+15)}, ${Math.round(g*0.15+15)}, ${Math.round(b*0.15+15)})`);
+                root.style.setProperty('--text-dark', '#f5f6fa'); 
+                root.style.setProperty('--text-light', '#a4b0be'); 
+                root.style.setProperty('--border', `rgb(${Math.round(r*0.3+30)}, ${Math.round(g*0.3+30)}, ${Math.round(b*0.3+30)})`);
+                root.style.setProperty('--heading-color', '#ffffff'); 
+            } else { 
+                root.style.setProperty('--bg-light', `rgb(${Math.round(r*0.05+255*0.95)}, ${Math.round(g*0.05+255*0.95)}, ${Math.round(b*0.05+255*0.95)})`); 
+                root.style.setProperty('--white', '#ffffff'); 
+                root.style.setProperty('--text-dark', `rgb(${Math.round(r*0.3)}, ${Math.round(g*0.3)}, ${Math.round(b*0.3)})`); 
+                root.style.setProperty('--text-light', '#7f8c8d');
+                root.style.setProperty('--border', `rgb(${Math.round(r*0.15+255*0.85)}, ${Math.round(g*0.15+255*0.85)}, ${Math.round(b*0.15+255*0.85)})`);
+                root.style.setProperty('--heading-color', hex); 
+            }
+
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', hex);
+            localStorage.setItem('mindguard_custom_color', hex);
         }
 
-        // Рендер кнопок тем
-        const palette = document.getElementById('themePalette');
-        themes.forEach((t, index) => {
-            const dot = document.createElement('div');
-            dot.className = 'theme-dot';
-            dot.style.background = t.dot;
-            dot.onclick = () => applyTheme(index);
-            palette.appendChild(dot);
-        });
-        
-        // Восстановление темы при загрузке
-        const savedTheme = localStorage.getItem('mindguard_theme') || 0;
-        applyTheme(parseInt(savedTheme));
+        colorPicker.addEventListener('input', (e) => applyCustomColor(e.target.value));
+        const savedColor = localStorage.getItem('mindguard_custom_color') || '#2A5C82';
+        colorPicker.value = savedColor; applyCustomColor(savedColor);
 
-        // === 2. МУЛЬТИЯЗЫЧНОСТЬ И ВОПРОСЫ (СОКРАЩЕНО ДЛЯ КОДА) ===
+        // === 2. МУЛЬТИЯЗЫЧНОСТЬ + МОРАЛЬНЫЕ СООБЩЕНИЯ ДЛЯ ИГР ===
         const translations = {
-            kk: { logo: "MindGuard AI", title: "Өз ойыныңды басқар, өміріңді емес.", subtitle: "Жасанды интеллект көмегімен психологиялық анализ.", btn_test: "Бастау", reg_title: "Тіркелу", label_name: "Аты-жөніңіз:", placeholder_name: "Мысалы: Асан...", label_class: "Сынып:", placeholder_class: "9 А", label_consent: "Деректерді өңдеуге келісемін", btn_start_quiz: "Жалғастыру", mood_title: "Қазіргі көңіл-күйіңіз қандай?", mood_desc: "Сәйкес эмоцияны басыңыз", success_title: "Аяқталды!", success_story: "Сен — өз өміріңнің басты ойыншысысың. Виртуалды емес, шынайы өміріңді дамыт!", btn_game: "Ойын ойнау", q_progress: "Сұрақ", alert_empty: "Барлығын толтырыңыз!", chat_placeholder: "Жазыңыз..." },
-            ru: { logo: "MindGuard AI", title: "Управляй игрой, а не жизнью.", subtitle: "Психологический анализ с помощью ИИ.", btn_test: "Начать", reg_title: "Регистрация", label_name: "Ваше ФИО:", placeholder_name: "Например: Иван...", label_class: "Класс:", placeholder_class: "9 А", label_consent: "Согласен на обработку данных", btn_start_quiz: "Продолжить", mood_title: "Как вы себя чувствуете сейчас?", mood_desc: "Нажмите на эмоцию", success_title: "Завершено!", success_story: "Ты — главный герой своей жизни. Прокачивай себя в реальности, а не в игре!", btn_game: "Сыграть", q_progress: "Вопрос", alert_empty: "Заполните все поля!", chat_placeholder: "Напишите..." },
-            en: { logo: "MindGuard AI", title: "Control the game, not your life.", subtitle: "AI-powered psychological analysis.", btn_test: "Start", reg_title: "Registration", label_name: "Full Name:", placeholder_name: "e.g. John...", label_class: "Class:", placeholder_class: "9 A", label_consent: "I agree to data processing", btn_start_quiz: "Continue", mood_title: "How are you feeling right now?", mood_desc: "Click an emoji", success_title: "Completed!", success_story: "You are the main character of your life. Level up in reality, not in games!", btn_game: "Play a game", q_progress: "Question", alert_empty: "Fill all fields!", chat_placeholder: "Type..." }
+            kk: { 
+                logo: "Лудоманияға қарсы AI", title: "Өз ойыныңды басқар, өміріңді емес.", subtitle: "Жасанды интеллект көмегімен психологиялық анализ.", 
+                btn_test: "Бастау", reg_title: "Тіркелу", label_name: "Аты-жөніңіз:", placeholder_name: "Мысалы: Асан...", label_class: "Сынып:", placeholder_class: "9 А", 
+                label_consent: "Деректерді өңдеуге келісемін", btn_start_quiz: "Жалғастыру", mood_title: "Қазіргі көңіл-күйіңіз қандай?", mood_desc: "Сәйкес эмоцияны басыңыз", 
+                success_title: "Аяқталды! 🎉", success_story: "Сен — өз өміріңнің басты ойыншысысың. Виртуалды емес, шынайы өміріңді дамыт!", btn_game: "Шағын ойын", 
+                q_progress: "Сұрақ", alert_empty: "Барлығын толтырыңыз!", alert_consent: "Келісімді растаңыз!", chat_placeholder: "Жазыңыз...", footer_text: "© 2026 Лудоманияға қарсы AI жобасы.", 
+                game1_title: "Иллюзияны бұзу", game1_btn: "Бәс тігу", game2_title: "Пайдалы әдеттер", game3_title: "Миф пе?", game3_true: "Ақиқат", game3_false: "Миф", chat_notify: "Көмек керек пе? 👋",
+                moral_casino: "Көрдіңіз бе? Жүйе әрқашан жеңеді. Виртуалды ұтысқа алданбаңыз, нағыз жетістік тек еңбекпен келеді.",
+                moral_memory: "Шынайы хобби сені дамытады, ал виртуалды ойын уақытыңды ұрлайды. Өз өміріңді таңда!",
+                moral_myth: "Бұл құр ғана миф. Тәуелділік өзіңді алдаудан басталады. Фактілерге сеніңіз, иллюзияға емес."
+            },
+            ru: { 
+                logo: "ИИ против лудомании", title: "Управляй игрой, а не жизнью.", subtitle: "Психологический анализ с помощью ИИ.", 
+                btn_test: "Начать", reg_title: "Регистрация", label_name: "Ваше ФИО:", placeholder_name: "Например: Иван...", label_class: "Класс:", placeholder_class: "9 А", 
+                label_consent: "Согласен на обработку данных", btn_start_quiz: "Продолжить", mood_title: "Как вы себя чувствуете сейчас?", mood_desc: "Нажмите на эмоцию", 
+                success_title: "Завершено! 🎉", success_story: "Ты — главный герой своей жизни. Прокачивай себя в реальности, а не в игре!", btn_game: "Мини-игра", 
+                q_progress: "Вопрос", alert_empty: "Заполните все поля!", alert_consent: "Подтвердите согласие!", chat_placeholder: "Напишите...", footer_text: "© 2026 Проект ИИ против лудомании.", 
+                game1_title: "Разрушение Иллюзий", game1_btn: "Ставка", game2_title: "Полезные привычки", game3_title: "Правда/Миф?", game3_true: "Правда", game3_false: "Миф", chat_notify: "Нужна помощь? 👋",
+                moral_casino: "Видите? Система всегда побеждает. Не обманывайтесь виртуальным выигрышем, настоящий успех приходит только через труд.",
+                moral_memory: "Реальные хобби развивают твой мозг и тело, а игры лишь тратят твое время. Выбирай реальную жизнь!",
+                moral_myth: "Это просто миф. Зависимость начинается с самообмана. Верьте фактам, а не иллюзиям."
+            },
+            en: { 
+                logo: "Anti-Ludomania AI", title: "Control the game, not your life.", subtitle: "AI-powered psychological analysis.", 
+                btn_test: "Start", reg_title: "Registration", label_name: "Full Name:", placeholder_name: "e.g. John...", label_class: "Class:", placeholder_class: "9 A", 
+                label_consent: "I agree to data processing", btn_start_quiz: "Continue", mood_title: "How are you feeling right now?", mood_desc: "Click an emoji", 
+                success_title: "Completed! 🎉", success_story: "You are the main character of your life. Level up in reality, not in games!", btn_game: "Play a game", 
+                q_progress: "Question", alert_empty: "Fill all fields!", alert_consent: "Please check the consent box!", chat_placeholder: "Type...", footer_text: "© 2026 Anti-Ludomania AI Project.", 
+                game1_title: "Shattering Illusions", game1_btn: "Bet", game2_title: "Healthy Habits", game3_title: "Fact or Myth?", game3_true: "Fact", game3_false: "Myth", chat_notify: "Need help? 👋",
+                moral_casino: "See? The house always wins. Don't be fooled by virtual wins; real success comes through hard work.",
+                moral_memory: "Healthy hobbies make you stronger in reality, while games just steal your time. Choose real life!",
+                moral_myth: "This is just a myth. Addiction starts with self-deception. Trust facts, not illusions."
+            }
         };
 
+        // ПОЛНАЯ БАЗА 21 ВОПРОС
         const questions = [
-            { kk: { q: "Ойынға қанша уақыт бөлесіз?", opts: ["1 сағаттан аз", "1-3 сағат", "3 сағаттан көп"] }, ru: { q: "Сколько времени играете?", opts: ["До 1 часа", "1-3 часа", "Более 3 часов"] }, en: { q: "Gaming time per day?", opts: ["< 1 hr", "1-3 hrs", "> 3 hrs"] } },
-            { kk: { q: "Ақша тігесіз бе?", opts: ["Жоқ", "Кейде", "Жиі, қарызға кірдім"] }, ru: { q: "Делаете ставки/донаты?", opts: ["Нет", "Иногда", "Да, есть долги"] }, en: { q: "Do you spend money/bet?", opts: ["No", "Sometimes", "Yes, in debt"] } },
-            { kk: { q: "Ұтылғанда қайта ойнайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, міндетті түрде"] }, ru: { q: "Отыгрываетесь ли вы?", opts: ["Нет", "Иногда", "Да, всегда"] }, en: { q: "Do you chase losses?", opts: ["No", "Sometimes", "Always"] } },
-            { kk: { q: "Ойын үшін өтірік айттыңыз ба?", opts: ["Жоқ", "1-2 рет", "Иә, жиі"] }, ru: { q: "Лгали ли вы об играх?", opts: ["Нет", "1-2 раза", "Да, часто"] }, en: { q: "Lied about gaming?", opts: ["No", "Rarely", "Often"] } },
-            { kk: { q: "Ұйқыңыз бұзылды ма?", opts: ["Жоқ", "Кейде", "Иә, түнде ойнаймын"] }, ru: { q: "Нарушен ли сон?", opts: ["Нет", "Иногда", "Да, играю ночью"] }, en: { q: "Sleep affected?", opts: ["No", "Sometimes", "Yes, play at night"] } },
-            { kk: { q: "Стресстен құтылу үшін ойнайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, тек осылай"] }, ru: { q: "Играете чтобы уйти от стресса?", opts: ["Нет", "Иногда", "Да, только так"] }, en: { q: "Play to escape stress?", opts: ["No", "Sometimes", "Yes"] } },
-            { kk: { q: "Ойынсыз өмір қызықсыз ба?", opts: ["Жоқ", "Кейде", "Иә"] }, ru: { q: "Жизнь скучна без игр?", opts: ["Нет", "Иногда", "Да"] }, en: { q: "Life boring without games?", opts: ["No", "Sometimes", "Yes"] } }
-        ]; // Оставил 7 для компактности кода, логика та же
+            { kk: { q: "Ойынға күніне қанша уақыт бөлесіз?", opts: ["1 сағаттан аз", "1-3 сағат", "3 сағаттан көп"] }, ru: { q: "Сколько времени в день вы играете?", opts: ["Меньше 1 часа", "1-3 часа", "Более 3 часов"] }, en: { q: "How much time a day do you play?", opts: ["Less than 1 hour", "1-3 hours", "More than 3 hours"] } },
+            { kk: { q: "Ойнай алмаған кезде өзіңізді қалай сезінесіз?", opts: ["Қалыпты", "Аздап ішім пысады", "Ашуланып, мазасызданамын"] }, ru: { q: "Что вы чувствуете, когда не можете играть?", opts: ["Нормально", "Немного скучаю", "Злюсь и нервничаю"] }, en: { q: "How do you feel when you can't play?", opts: ["Normal", "A bit bored", "Angry and anxious"] } },
+            { kk: { q: "Ойынға/бәске ақша жұмсайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, қарызға да кірдім"] }, ru: { q: "Тратите ли вы деньги на игры/ставки?", opts: ["Нет", "Иногда", "Да, даже брал в долг"] }, en: { q: "Do you spend money on games/bets?", opts: ["No", "Sometimes", "Yes, even borrowed money"] } },
+            { kk: { q: "Ойын туралы жақындарыңызға өтірік айттыңыз ба?", opts: ["Ешқашан", "1-2 рет", "Иә, жиі"] }, ru: { q: "Лгали ли вы близким о своей игре?", opts: ["Никогда", "1-2 раза", "Да, часто"] }, en: { q: "Have you lied to family about gaming?", opts: ["Never", "1-2 times", "Yes, frequently"] } },
+            { kk: { q: "Ойын сабағыңызға/ұйқыңызға кедергі келтіре ме?", opts: ["Жоқ", "Кейде", "Иә, өте қатты"] }, ru: { q: "Мешает ли игра учебе/сну?", opts: ["Нет", "Иногда", "Да, очень сильно"] }, en: { q: "Does gaming interfere with sleep/study?", opts: ["No", "Sometimes", "Yes, severely"] } },
+            { kk: { q: "Ұтылған соң ақшаны қайтару үшін ойнайсыз ба?", opts: ["Жоқ", "Кейде ойланам", "Иә, міндетті түрде"] }, ru: { q: "Пытаетесь ли вы отыграться после проигрыша?", opts: ["Нет", "Иногда думаю об этом", "Да, обязательно"] }, en: { q: "Do you chase losses after losing?", opts: ["No", "Sometimes think about it", "Yes, always"] } },
+            { kk: { q: "Жаман көңіл-күйден арылу үшін ойнайсыз ба?", opts: ["Жоқ", "Кейде көмектеседі", "Иә, тек осылай"] }, ru: { q: "Играете ли вы, чтобы уйти от плохих мыслей?", opts: ["Нет", "Иногда помогает", "Да, только так"] }, en: { q: "Do you play to escape a bad mood?", opts: ["No", "Sometimes helps", "Yes, it's my only way"] } },
+            { kk: { q: "Ойнау үшін тамақ ішуді ұмыттыңыз ба?", opts: ["Ешқашан", "1-2 рет", "Иә, жиі"] }, ru: { q: "Забывали ли вы поесть из-за игры?", opts: ["Никогда", "1-2 раза", "Да, часто"] }, en: { q: "Have you forgotten to eat due to gaming?", opts: ["Never", "1-2 times", "Yes, frequently"] } },
+            { kk: { q: "Ойынға бола отбасыңызбен ұрыстыңыз ба?", opts: ["Жоқ", "Аздап", "Иә, жиі"] }, ru: { q: "Ссорились ли вы с семьей из-за игр?", opts: ["Нет", "Немного", "Да, часто"] }, en: { q: "Argued with family over gaming?", opts: ["No", "A little", "Yes, often"] } },
+            { kk: { q: "Ойнап жатқанда өзіңізді басқара алмайсыз ба?", opts: ["Басқарамын", "Кейде қызығып кетем", "Тоқтай алмаймын"] }, ru: { q: "Теряете ли вы контроль во время игры?", opts: ["Контролирую", "Иногда увлекаюсь", "Не могу остановиться"] }, en: { q: "Do you lose control while playing?", opts: ["I control it", "Sometimes get carried away", "I can't stop"] } },
+            { kk: { q: "Ұтқан ақша өміріңізді өзгертеді деп ойлайсыз ба?", opts: ["Жоқ", "Мүмкін", "Иә, үлкен ұтыс күтем"] }, ru: { q: "Считаете ли вы, что выигрыш изменит жизнь?", opts: ["Нет", "Возможно", "Да, жду большой куш"] }, en: { q: "Do you think winning will change your life?", opts: ["No", "Maybe", "Yes, expecting a big win"] } },
+            { kk: { q: "Соңғы ақшаңызды тіккен кездер болды ма?", opts: ["Ешқашан", "Болған сияқты", "Иә, көп рет"] }, ru: { q: "Ставили ли вы свои последние деньги?", opts: ["Никогда", "Вроде было", "Да, много раз"] }, en: { q: "Have you bet your last money?", opts: ["Never", "Think so", "Yes, many times"] } },
+            { kk: { q: "Ойынсыз өмір қызықсыз ба?", opts: ["Жоқ", "Кейде", "Иә"] }, ru: { q: "Жизнь скучна без игр?", opts: ["Нет", "Иногда", "Да"] }, en: { q: "Is life boring without games?", opts: ["No", "Sometimes", "Yes"] } },
+            { kk: { q: "Спорттан гөрі ойынды таңдайсыз ба?", opts: ["Жоқ", "Екеуіне де үлгерем", "Иә"] }, ru: { q: "Предпочитаете игры спорту?", opts: ["Нет", "Успеваю и то и другое", "Да"] }, en: { q: "Do you choose gaming over sports?", opts: ["No", "I balance both", "Yes"] } },
+            { kk: { q: "Ойын үшін қарыз сұрадыңыз ба?", opts: ["Жоқ", "Аздап", "Иә, көп қарызым бар"] }, ru: { q: "Просили ли вы в долг на игру?", opts: ["Нет", "Немного", "Да, много долгов"] }, en: { q: "Borrowed money for gaming?", opts: ["No", "A little", "Yes, heavy debt"] } },
+            { kk: { q: "Ойыннан кейін өзіңізді кінәлі сезіндіңіз бе?", opts: ["Жоқ", "Кейде", "Иә, үнемі"] }, ru: { q: "Чувствовали вину после игры?", opts: ["Нет", "Иногда", "Да, постоянно"] }, en: { q: "Felt guilty after gaming?", opts: ["No", "Sometimes", "Yes, constantly"] } },
+            { kk: { q: "Сабақ кезінде ойын туралы ойлайсыз ба?", opts: ["Жоқ", "Кейде", "Иә, үнемі"] }, ru: { q: "Думаете ли вы об игре на уроках?", opts: ["Нет", "Иногда", "Да, постоянно"] }, en: { q: "Do you think about games during class?", opts: ["No", "Sometimes", "Yes, constantly"] } },
+            { kk: { q: "Ойын кезінде біреу мазаласа ашуланасыз ба?", opts: ["Жоқ", "Аздап", "Иә, қатты"] }, ru: { q: "Злитесь, если вас отвлекают от игры?", opts: ["Нет", "Немного", "Да, сильно"] }, en: { q: "Get angry if interrupted while playing?", opts: ["No", "A little", "Yes, very"] } },
+            { kk: { q: "Ойын үшін жаман істерге бардыңыз ба?", opts: ["Ешқашан", "Ойладым", "Иә, ұрладым/алдадым"] }, ru: { q: "Совершали плохие поступки ради игры?", opts: ["Никогда", "Думал об этом", "Да, воровал/обманывал"] }, en: { q: "Done bad things for game money?", opts: ["Never", "Thought about it", "Yes, stole/lied"] } },
+            { kk: { q: "Адамдар сізге 'ойынды қой' деп айта ма?", opts: ["Ешкім айтпайды", "Кейде", "Иә, күнде ұрысады"] }, ru: { q: "Говорят ли вам люди бросить играть?", opts: ["Никто не говорит", "Иногда", "Да, каждый день ссоры"] }, en: { q: "Do people tell you to quit gaming?", opts: ["No one says it", "Sometimes", "Yes, daily arguments"] } },
+            { kk: { q: "Ойынды тастауға тырысып көрдіңіз бе?", opts: ["Қалаған кезде тастай алам", "Бірнеше күн ойнамадым", "Тырыстым, бірақ қайта бастадым"] }, ru: { q: "Пытались ли вы бросить играть?", opts: ["Могу бросить когда угодно", "Не играл пару дней", "Пытался, но сорвался"] }, en: { q: "Have you tried to quit gaming?", opts: ["I can quit anytime", "Stopped for a few days", "Tried but relapsed"] } }
+        ];
 
         function changeLanguage() {
             const lang = document.getElementById('languageSelect').value;
-            document.querySelectorAll('[data-i18n]').forEach(el => el.innerHTML = translations[lang][el.getAttribute('data-i18n')] || el.innerHTML);
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = translations[lang][el.getAttribute('data-i18n-placeholder')] || "");
+            document.title = translations[lang].logo;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    if(el.tagName === 'DIV' && el.id === 'story-content') el.innerHTML = translations[lang][key];
+                    else el.textContent = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+            document.documentElement.lang = lang;
+            
             if(document.getElementById('quiz-container').style.display === 'block') showQuestion();
-        }
+            if(document.getElementById('game-myth').style.display === 'block') document.getElementById('myth-text').innerText = '"Егер көп ұтылсаң, келесі жолы міндетті түрде ұтасың"';
+            document.getElementById('casino-balance').innerText = `${getText('balance')}: ${casinoBal} ₸`;
 
-        // === 3. ЛОГИКА ТРЕКЕРА НАСТРОЕНИЯ И ТЕСТА ===
-        let studentData = { name: "", cls: "", mood: "", score: 0, details: "" };
-        let currentQ = 0;
+            const chatMessages = document.getElementById('chatMessages');
+            if(chatMessages.children.length === 1 && chatMessages.children[0].classList.contains('msg-bot')) {
+                chatMessages.innerHTML = ''; addMessage(getText('bot_greeting'), 'bot');
+            }
+        }
+        function getText(key) { return translations[document.getElementById('languageSelect').value][key] || key; }
+
+        // === 3. ЛОГИКА ТЕСТА ===
+        let studentData = { name: "", cls: "", mood: "", score: 0, details: "" }; let currentQ = 0; let testHintTimer;
+        let selectedQuestions = [];
 
         function showRegistration() { document.getElementById('hero-section').style.display = 'none'; document.getElementById('test-section').style.display = 'block'; }
 
         function beginMoodTracker() {
             studentData.name = document.getElementById('student-name').value.trim();
             studentData.cls = document.getElementById('student-class').value.trim();
-            if (!studentData.name || !studentData.cls || !document.getElementById('consent-check').checked) { alert(translations[document.getElementById('languageSelect').value].alert_empty); return; }
+            const lang = document.getElementById('languageSelect').value;
+            
+            if (!studentData.name || !studentData.cls) { alert(translations[lang].alert_empty); return; }
+            if (!document.getElementById('consent-check').checked) { alert(translations[lang].alert_consent); return; }
             
             document.getElementById('registration-container').style.display = 'none';
             document.getElementById('mood-container').style.display = 'block';
         }
 
         function selectMood(mood) {
-            studentData.mood = mood; // Сохраняем настроение
+            studentData.mood = mood; 
             document.getElementById('mood-container').style.display = 'none';
             document.getElementById('quiz-container').style.display = 'block';
+            
+            testStarted = true; clearTimeout(attentionTimer);
+            document.getElementById('chatBtnIcon').classList.remove('attention-pulse');
+            document.getElementById('chatNotification').style.display = 'none';
+            
+            // ВЫБИРАЕМ 7 СЛУЧАЙНЫХ ВОПРОСОВ ИЗ 21
+            selectedQuestions = questions.sort(() => 0.5 - Math.random()).slice(0, 7);
             showQuestion();
         }
 
         function showQuestion() {
             const lang = document.getElementById('languageSelect').value;
-            const q = questions[currentQ][lang];
+            const q = selectedQuestions[currentQ][lang];
             document.getElementById('q-number').innerText = `${translations[lang].q_progress} ${currentQ + 1} / 7`;
             document.getElementById('q-text').innerText = q.q;
             
+            const hintEl = document.getElementById('q-hint');
+            hintEl.style.display = 'none'; hintEl.innerText = botData[lang].testHint;
+            clearTimeout(testHintTimer); testHintTimer = setTimeout(() => { hintEl.style.display = 'block'; hintEl.classList.add('fadeInAnim'); }, 60000);
+
             const area = document.getElementById('options-area'); area.innerHTML = '';
             q.opts.forEach((opt, idx) => {
                 const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = opt;
                 btn.onclick = () => {
-                    studentData.score += idx; 
-                    studentData.details += `В: ${q.q}\nО: ${opt}\n\n`;
+                    clearTimeout(testHintTimer);
+                    studentData.score += idx; studentData.details += `В: ${q.q}\nО: ${opt}\n\n`;
                     currentQ++; 
-                    if(currentQ < questions.length) showQuestion(); else finishTest();
+                    if(currentQ < selectedQuestions.length) showQuestion(); else finishTest();
                 };
                 area.appendChild(btn);
             });
         }
 
-        // === 4. ОТПРАВКА ДАННЫХ В GOOGLE ТАБЛИЦЫ ===
-        // ВАЖНО: Сюда нужно вставить ссылку, которую вам выдаст Google Script (Шаг 2)
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwI6OSQ36Y4CtkqGud9iUJni8Dynv0zZp0gI3lOgE78B3msIUFO27MMaL4hsbjDJaK2vA/exec"; 
+        const GOOGLE_SCRIPT_URL = "ВСТАВИТЬ_ССЫЛКУ_СЮДА"; 
         
         function finishTest() {
             document.getElementById('quiz-container').style.display = 'none';
             document.getElementById('success-screen').style.display = 'block';
 
-            let risk = studentData.score <= 4 ? "🟢 Жасыл (Қауіпсіз/Норма)" : studentData.score <= 9 ? "🟡 Сары (Орташа/Средний)" : "🔴 Қызыл (Қауіпті/Высокий)";
+            let risk = studentData.score <= 4 ? "🟢 Жасыл" : studentData.score <= 9 ? "🟡 Сары" : "🔴 Қызыл";
 
-            // 1. Формируем данные для Google Sheets
             const formData = new URLSearchParams();
-            formData.append("Имя", studentData.name);
-            formData.append("Класс", studentData.cls);
-            formData.append("Настроение", studentData.mood);
-            formData.append("Балл", `${studentData.score}/14`);
-            formData.append("Риск", risk);
-            formData.append("Ответы", studentData.details);
+            formData.append("Имя", studentData.name); formData.append("Класс", studentData.cls);
+            formData.append("Настроение", studentData.mood); formData.append("Балл", `${studentData.score}/14`);
+            formData.append("Риск", risk); formData.append("Ответы", studentData.details);
 
-            // Отправка в Google Таблицы (Если ссылка вставлена)
-            if(GOOGLE_SCRIPT_URL !== "ВСТАВИТЬ_ССЫЛКУ_СЮДА") {
-                fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData })
-                .then(res => console.log("Google Sheets Success"))
-                .catch(err => console.error(err));
-            }
+            if(GOOGLE_SCRIPT_URL !== "ВСТАВИТЬ_ССЫЛКУ_СЮДА") fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData }).catch(e=>e);
 
-            // Отправка на почту Formspree (Оставлено как резервный вариант)
             const emailData = new URLSearchParams();
             emailData.append("email", "kazaхand_i@mail.ru");
             emailData.append("_subject", `ЛУДОМАНИЯ: ${studentData.name}`);
-            emailData.append("Настроение", studentData.mood); // Настроение прилетит на почту!
-            emailData.append("Результат", risk);
+            emailData.append("Настроение", studentData.mood); emailData.append("Результат", risk);
             fetch("https://formspree.io/f/mlgwpoko", { method: 'POST', body: emailData });
         }
 
-        // --- ИГРЫ И ЧАТ (ОСТАВЛЕНЫ ИЗ ПРЕДЫДУЩИХ ВЕРСИЙ, СКРЫТЫ ДЛЯ ЭКОНОМИИ МЕСТА) ---
-        function revealGame() { document.getElementById('game-casino').style.display = 'block'; }
-        let chatOpen = false;
-        function toggleChat() { chatOpen = !chatOpen; document.getElementById('chatBox').style.display = chatOpen ? 'flex' : 'none'; }
-        function sendMessage() { 
-            const inp = document.getElementById('chatInput'); if(!inp.value) return;
-            const area = document.getElementById('chatMessages');
-            area.innerHTML += `<div class="msg msg-user">${inp.value}</div>`; inp.value = '';
-            setTimeout(() => area.innerHTML += `<div class="msg msg-bot">Мен ИИ-көмекшімін. Сен жалғыз емессің 💙</div>`, 1000);
+        // --- 4. ИГРЫ И МОРАЛЬ (ПОУЧИТЕЛЬНЫЕ СООБЩЕНИЯ) ---
+        let activeGame = 0; 
+        function revealGame() {
+            document.getElementById('btn-reveal-game').style.display = 'none'; activeGame = Math.floor(Math.random() * 3) + 1; 
+            if (activeGame === 1) { document.getElementById('game-casino').style.display = 'block'; document.getElementById('casino-balance').innerText = `10000 ₸`; }
+            else if (activeGame === 2) { document.getElementById('game-memory').style.display = 'block'; initMemoryGame(); }
+            else if (activeGame === 3) { document.getElementById('game-myth').style.display = 'block'; document.getElementById('myth-text').innerText = '"Егер көп ұтылсаң, келесі жолы міндетті түрде үлкен ұтыс болады"'; }
         }
-        
-        // === 5. РЕГИСТРАЦИЯ PWA (ДЛЯ УСТАНОВКИ НА ТЕЛЕФОН) ===
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => {
-                    console.log('PWA Service Worker зарегистрирован!', reg);
-                }).catch(err => console.log('Ошибка PWA:', err));
-            });
+
+        let casinoBal = 10000;
+        function spinCasino() {
+            if (casinoBal <= 0) return;
+            const slots = document.getElementById('casino-slots'); const msg = document.getElementById('casino-msg'); const btn = document.getElementById('btn-spin');
+            btn.disabled = true; casinoBal -= 2000; document.getElementById('casino-balance').innerText = `${casinoBal} ₸`;
+            let spins = 0; let interval = setInterval(() => {
+                const emojis = ['🍒', '🔔', '🍋', '💎', '❌', '💣']; slots.innerText = `${emojis[Math.floor(Math.random()*6)]} ${emojis[Math.floor(Math.random()*6)]} ${emojis[Math.floor(Math.random()*6)]}`;
+                spins++;
+                if(spins > 10) {
+                    clearInterval(interval); slots.innerText = '❌ 💣 ❌'; 
+                    if (casinoBal > 0) { 
+                        msg.innerText = "Проигрыш"; btn.disabled = false; 
+                    } else { 
+                        // ДОБАВЛЕНА МОРАЛЬ ДЛЯ КАЗИНО
+                        msg.innerHTML = "БАНКРОТ! 💸<br><br><span style='color:var(--text-dark); font-weight:normal; font-size:14px;'>" + getText('moral_casino') + "</span>"; 
+                        btn.style.display = 'none'; 
+                    }
+                }
+            }, 100);
         }
+
+        const memoryItems = ['📚','📚','⚽','⚽','🚴','🚴','🎨','🎨']; let memoryCards = []; let flippedCards = []; let matchedCount = 0;
+        function initMemoryGame() {
+            memoryCards = memoryItems.sort(() => 0.5 - Math.random()); const board = document.getElementById('memory-board'); board.innerHTML = '';
+            memoryCards.forEach((item) => { const card = document.createElement('div'); card.className = 'memory-card'; card.dataset.val = item; card.onclick = () => flipCard(card); board.appendChild(card); });
+        }
+        function flipCard(card) {
+            if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                card.classList.add('flipped'); card.innerText = card.dataset.val; flippedCards.push(card);
+                if(flippedCards.length === 2) setTimeout(checkMemoryMatch, 800);
+            }
+        }
+        function checkMemoryMatch() {
+            if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) { 
+                matchedCount += 2; 
+                if(matchedCount === memoryCards.length) {
+                    // ДОБАВЛЕНА МОРАЛЬ ДЛЯ MEMORY
+                    const msg = document.getElementById('memory-msg');
+                    msg.style.display = 'block';
+                    msg.innerHTML = "🎉 <br><br><span style='color:var(--text-dark); font-weight:normal; font-size:14px;'>" + getText('moral_memory') + "</span>";
+                } 
+            } else { 
+                flippedCards[0].classList.remove('flipped'); flippedCards[0].innerText = ''; flippedCards[1].classList.remove('flipped'); flippedCards[1].innerText = ''; 
+            }
+            flippedCards = [];
+        }
+
+        function checkMyth(isTrue) {
+            const feedback = document.getElementById('myth-feedback'); feedback.style.display = 'block';
+            if (isTrue) { feedback.style.backgroundColor = "#fadbd8"; feedback.style.color = "#c0392b"; feedback.innerHTML = "ҚАТЕ ❌"; } 
+            else { feedback.style.backgroundColor = "#e8f8f5"; feedback.style.color = "#27ae60"; feedback.innerHTML = "ДҰРЫС ✅"; }
+            
+            // ДОБАВЛЕНА МОРАЛЬ ДЛЯ МИФА
+            feedback.innerHTML += "<br><br><span style='color:var(--text-dark); font-weight:normal; font-size:14px;'>" + getText('moral_myth') + "</span>";
+            document.querySelector('.myth-buttons').style.display = 'none';
+        }
+
+        // --- 5. ЧАТ БОТ ---
+        let chatOpen = false; let chatIdleTimer; let attentionTimer; let testStarted = false;
+        const chatBox = document.getElementById('chatBox'); const chatMessages = document.getElementById('chatMessages'); const chatInput = document.getElementById('chatInput');
+
+        const botData = {
+            kk: {
+                intents: [
+                    { keys: ["сәлем", "привет", "хай", "қалайсың"], replies: ["Сәлем! Вайб қалай?", "Сәлем, бро! Бәрі четко ма?", "Хай! Сені тыңдап тұрмын."] },
+                    { keys: ["әзіл", "шутка"], replies: ["Казинода ұтамын деп ойлаудың өзі үлкен әзіл ғой 😅", "Бро, менің ішіме әзілдер базасын жүктеуді ұмытып кетіпті 🤖"] },
+                    { keys: ["рақмет", "рахмет", "спасибо"], replies: ["Базар жоқ, бро! Әрқашан дайынмын ✊", "Оқасы жоқ. Бәрі жақсы болады!", "Денсаулығыңды күт."] },
+                    { keys: ["қарыз", "ақша", "кредит"], replies: ["Ақшаға байланысты уайымдап тұрғаныңды түсінемін. Қарыз — бұл шешілетін нәрсе.", "Қарыз қатты қысым жасайды... Бірақ ойнау оны тек көбейтеді."] },
+                    { keys: ["ұтылдым", "жеңілдім", "ставка"], replies: ["Жүйе сені ұтқызу үшін емес, ақшаңды алу үшін жасалған.", "Қазір тоқтаған дұрыс. Таза ауаға шығып келші."] },
+                    { keys: ["қорқамын", "ата-анам", "ұрысады"], replies: ["Ата-анаң сені жақсы көреді. Шындықты айту қиын болса да, бұл — жалғыз жол.", "Түсінемін... Бірақ жасырған сайын жағдай қиындай береді."] },
+                    { keys: ["көмектес", "нашар", "депрессия"], replies: ["Сенің қиналғаныңды сезіп тұрмын. Мектеп психологына немесе 111 нөміріне хабарлас.", "Сен маңыздысың! Қиындықтар уақытша."] }
+                ],
+                badWords: ["ақымақ", "мал", "жынды", "сука", "бля", "нахуй", "далбаеб", "котақ"],
+                badReplies: ["Бро, ашуланып тұрғаныңды түсінемін. Дөрекіліксіз сөйлесейікші? 💙", "Сөздер жанға батуы мүмкін. 'Маған көмек керек' деп айтшы."],
+                unknown: ["Бро, мен сені сәл түсінбей қалдым 🤖 Мүмкін негізгі тақырыпқа оралармыз?", "Бұл қызық екен! Бірақ мен лудомания жайлы ғана сөйлесе аламын."],
+                chatTimeout: "Сен осындасың ба? Егер сөйлескің келмесе — ештеңе етпейді, мен осындамын.",
+                testHint: "Көп ойланба! Бірінші ойыңа келген нұсқаны таңда.",
+                chatCleared: "Чат тазартылды. Сенің құпияларың қауіпсіздікте 🔒"
+            },
+            ru: {
+                intents: [
+                    { keys: ["привет", "хай", "салем", "ку", "как дела"], replies: ["Салют! Как вайб? ✨", "Привет, бро! Чего нового?", "Всё супер, чилю в коде 😎 А ты как?"] },
+                    { keys: ["шутка", "анекдот", "рассмеши"], replies: ["Знаешь, какая самая смешная шутка? 'Я отыграюсь в следующий раз' 😅", "Мой создатель забыл загрузить в меня мемы 🤖"] },
+                    { keys: ["спасибо", "спс", "рахмет", "от души"], replies: ["Без б! Обращайся ✊", "Красавчик! Если что — я на связи.", "От души! У тебя всё получится!"] },
+                    { keys: ["долг", "деньги", "кредит", "занял"], replies: ["Понимаю твою тревогу... Но долги — это решаемая проблема. Главное — не отыгрываться.", "Знаю, долги давят. Но поверь, лучше признаться взрослым сейчас."] },
+                    { keys: ["проиграл", "ставка", "казино", "слил"], replies: ["Проигрыш вызывает стресс. Но казино всегда в плюсе. Сделай паузу.", "Удали приложение и просто выдохни. Ты не сможешь обыграть алгоритм."] },
+                    { keys: ["боюсь", "родител", "узнают", "ругать"], replies: ["Страх естественен. Но сказать правду — единственный способ сбросить груз с плеч.", "Первый разговор будет сложным, но потом тебе станет намного легче."] },
+                    { keys: ["помоги", "плохо", "депрессия", "устал"], replies: ["Пожалуйста, не держи это в себе. Обратись к психологу или позвони на 111.", "Ты не один! Позвони по номеру 111, там могут помочь."] }
+                ],
+                badWords: ["дурак", "тупой", "сука", "бля", "нахуй", "пиздец", "ебать", "хуй"],
+                badReplies: ["Я понимаю, что ты злишься. Но я создан помогать. Давай без грубостей? 💙", "Слова могут ранить. Если тебе плохо — просто скажи 'мне нужна помощь'."],
+                unknown: ["Сорян, бро, мой ИИ-мозг завис 🤖 Пояснишь?", "Жиза... Наверное. Расскажи подробнее, а то я не выкупил."],
+                chatTimeout: "Ты здесь? Если передумал общаться — закрой чат. Я всегда тут.",
+                testHint: "Не думай слишком долго. Выбирай ответ, который первым пришел в голову.",
+                chatCleared: "Чат очищен. Твои секреты в безопасности 🔒"
+            },
+            en: {
+                intents: [
+                    { keys: ["hi", "hello", "hey", "wassup"], replies: ["Yo! What's good?", "Hey bro, how's the vibe today?", "Wassup! I'm here for you."] },
+                    { keys: ["joke", "meme"], replies: ["Thinking you can beat the algorithm is a joke 😅", "I forgot to download my meme database 🤖"] },
+                    { keys: ["thanks", "thx"], replies: ["Gotchu bro ✊", "No worries! Stay safe.", "Anytime!"] },
+                    { keys: ["debt", "money", "owe"], replies: ["Debts can be fixed, but chasing losses makes it worse.", "Money issues are tough. Stop playing and ask for help."] },
+                    { keys: ["lost", "bet", "gamble"], replies: ["The house always wins. Please step away from the screen.", "Delete the app, it's not worth your mental health."] },
+                    { keys: ["scared", "parents", "mad"], replies: ["Telling the truth is the first step to freedom.", "It will be a hard conversation, but you will feel lighter."] },
+                    { keys: ["help", "bad", "depressed"], replies: ["Please don't face this alone. Call a helpline 111.", "Reach out to someone who can help you in real life."] }
+                ],
+                badWords: ["fuck", "shit", "bitch", "asshole", "dick"],
+                badReplies: ["I'm here to help. Let's keep our chat respectful, okay? 💙", "If you're feeling bad, just say 'I need help'."],
+                unknown: ["My AI brain just blue-screened 🤖 Say that again?", "That's wild... but tell me more about how you're feeling?"],
+                chatTimeout: "Are you there? I'll be here if you need me.",
+                testHint: "Choose the first answer that comes to mind.",
+                chatCleared: "Chat cleared. Your secrets are safe 🔒"
+            }
+        };
+
+        window.onload = () => {
+            changeLanguage();
+            attentionTimer = setTimeout(() => {
+                if (!testStarted && !chatOpen) { document.getElementById('chatBtnIcon').classList.add('attention-pulse'); document.getElementById('chatNotification').style.display = 'block'; }
+            }, 30000); 
+        };
+
+        function resetChatIdleTimer() {
+            clearTimeout(chatIdleTimer);
+            if(chatOpen) chatIdleTimer = setTimeout(() => { addMessage(botData[document.getElementById('languageSelect').value].chatTimeout, 'bot'); }, 120000); 
+        }
+
+        function toggleChat() {
+            chatOpen = !chatOpen; chatBox.style.display = chatOpen ? 'flex' : 'none';
+            document.getElementById('chatBtnIcon').innerHTML = chatOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-comment-dots"></i>';
+            if(chatOpen) {
+                document.getElementById('chatBtnIcon').classList.remove('attention-pulse'); document.getElementById('chatNotification').style.display = 'none';
+                clearTimeout(attentionTimer); resetChatIdleTimer(); 
+            } else { clearTimeout(chatIdleTimer); }
+            if(chatOpen && chatMessages.innerHTML.trim() === '') addMessage(botData[document.getElementById('languageSelect').value].intents[0].replies[0], 'bot');
+        }
+
+        function clearChat() { chatMessages.innerHTML = ''; addMessage(botData[document.getElementById('languageSelect').value].chatCleared, 'bot'); resetChatIdleTimer(); }
+        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
+
+        function sendMessage() {
+            const text = chatInput.value.trim(); if(!text) return;
+            addMessage(text, 'user'); chatInput.value = ''; resetChatIdleTimer(); 
+            
+            const div = document.createElement('div'); div.className = 'typing-indicator'; div.id = 'typingBubble';
+            div.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+            chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            setTimeout(() => {
+                const typing = document.getElementById('typingBubble'); if (typing) typing.remove();
+                const lang = document.getElementById('languageSelect').value; const lowerText = text.toLowerCase(); const cd = botData[lang];
+                let reply = cd.unknown[Math.floor(Math.random() * cd.unknown.length)];
+                for(let w of cd.badWords) if(lowerText.includes(w)) reply = cd.badReplies[Math.floor(Math.random() * cd.badReplies.length)];
+                for(let i of cd.intents) for(let k of i.keys) if(lowerText.includes(k)) reply = i.replies[Math.floor(Math.random() * i.replies.length)];
+                addMessage(reply, 'bot');
+            }, Math.floor(Math.random() * 1500) + 1000);
+        }
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div'); div.className = `msg msg-${sender}`; div.innerHTML = text;
+            chatMessages.appendChild(div); chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
     </script>
 </body>
 </html>
